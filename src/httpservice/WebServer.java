@@ -54,8 +54,14 @@ public class WebServer {
         server.setHandler(handler);
         logger_.info(" ************************** ");
 
-        handler.addServletWithMapping("webservlet.ScoreController", "/");
-        handler.addServletWithMapping("webservlet.ScoreController", "/*");
+        handler.addServletWithMapping("webservlet.ScoreController", "/score");
+        handler.addServletWithMapping("webservlet.ScoreController", "/score/*");
+        handler.addServletWithMapping("webservlet.FriendController", "/friend");
+        handler.addServletWithMapping("webservlet.FriendController", "/friend/*");
+        handler.addServletWithMapping("webservlet.DeviceController", "/device");
+        handler.addServletWithMapping("webservlet.DeviceController", "/device/*");
+        handler.addServletWithMapping("webservlet.ProfileController", "/profile");
+        handler.addServletWithMapping("webservlet.ProfileController", "/profile/*");
         
 //        handler.addServletWithMapping("webservlet.BlogComController", "/");
 //        handler.addServletWithMapping("webservlet.BlogComController", "/*");

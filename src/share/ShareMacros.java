@@ -15,39 +15,21 @@ public class ShareMacros {
     public static String USERS = "Users";
     
     public static String USER = "U_";
-    public static String USER_AVATA="avata";
-    public static String USER_NAME="name";
-    public static String USER_HELPFOOD="helpFood";
-    public static String USER_HELPDAY="helpDay";
     
-    public static String COTES = "cotes";
-    public static String COTES_SUM = "sumCotes";
-    public static String COTES_DETAIL = "coteDetail";
-    
-    public static String PEGS = "pegs";
-    public static String PEGS_TIMEEAT = "timeEat";
-    public static String PEGS_TIMESPAW = "timeSpaw";
-    
-    public static String EGGS = "eggs";
-    public static String EGGS_TIMEBIRTH = "timeBirth";
-    
-    public static String BOXEGG = "boxegg";
-    
-    public static String GOLD = "gold";
-    
-    public static String COIN = "coin";
-    
-    public static String FOOD = "food";
-    
+    public static String APPID = "appId";
+    public static String FACEID = "fbId";
+    public static String SCORE = "score";
+    public static String TIME = "time";
+    public static String NAME = "fbName";
+    public static String EMAIL = "email";
     public static String FRIENDS = "friends";
-    public static String FRIENDS_LIST = "";
+    public static String DEVICEID = "deviceId";
+    public static String TOKEN = "deviceToken";
+    public static String CONFIG = "deviceConfig";
+    public static String PHONENUMBER = "devicePhoneNumber";    
+    public static String FRIENDLIST = "list";    
     
-    public static String LEVEL = "level";
-    
-    public static String EXP = "exp";
-    
-    public static String TIMELOGIN = "timeLogin";
-   
-    public static String KIND = "kind";
+    public static String METHOD = "method"; 
+    public static String SUSSCES = "isSuccess";
     
 }
