@@ -54,6 +54,9 @@ public class WebServer {
         server.setHandler(handler);
         logger_.info(" ************************** ");
 
+        handler.addServletWithMapping("webservlet.ScoreController", "/");
+        handler.addServletWithMapping("webservlet.ScoreController", "/*");
+        
 //        handler.addServletWithMapping("webservlet.BlogComController", "/");
 //        handler.addServletWithMapping("webservlet.BlogComController", "/*");
 //        handler.addServletWithMapping("webservlet.CategoryController", "/cate/");
