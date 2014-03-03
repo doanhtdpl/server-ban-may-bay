@@ -14,12 +14,9 @@ import java.util.UUID;
  * @author LinhTA
  */
 public class KeysDefinition {
-      
-    static String LIST_PEGS = "P_";
-    static String LIST_EGGS = "E_";
+
     static String LIST_FRIENDS = "F_";
-    static String LIST_COTES = "C_";
-    static  String LIST_BOXS = "B_";
+    static String LIST_DEVICE = "D_";
     
     static  String USER = "U_";
     static  String USERS = "Users";
@@ -64,10 +61,6 @@ public class KeysDefinition {
             return USERS;
         }
         
-      
-        
-       
-        
         public static String getKey_ListFriends(int uid)
         {
             String key = "";
@@ -84,27 +77,35 @@ public class KeysDefinition {
             key = LIST_FRIENDS + uid;
             
             return key;
-        }
+        }   
         
-        
-        
-        public static String getKey_ListCotes(int uid)
+         public static String getKeyDevices(String uid)
         {
-            String key = "";
-            
-            key = LIST_COTES + String.valueOf(uid);
-            
-            return key;
+            return LIST_DEVICE +uid;
         }
         
-        public static String getKey_ListCotes(String uid)
+        public static String getKeyDevices(int uid)
         {
-            String key = "";
-            
-            key = LIST_COTES + uid;
-            
-            return key;
+            return  LIST_DEVICE + String.valueOf(uid);
         }
         
+         public static String getKeyAppUser(String uid,String appid)
+        {
+            return uid +"_A_"+appid;
+        }
         
+        public static String getKeyAppUser(int uid,int appid)
+        {
+            return  String.valueOf(uid) +"_A_"+ String.valueOf(appid);
+        }
+        
+        public static String getKeyDevice(String uid,String deviceid)
+        {
+            return uid +"_D_"+deviceid;
+        }
+        
+        public static String getKeyDevice(int uid,int deviceid)
+        {
+            return  String.valueOf(uid) +"_D_"+ String.valueOf(deviceid);
+        }
 }

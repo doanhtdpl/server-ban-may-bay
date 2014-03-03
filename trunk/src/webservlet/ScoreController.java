@@ -10,12 +10,16 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import libCore.LogUtil;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author LinhTA
  */
 public class ScoreController extends ServerServlet{
+    
+    private static final Logger log = Logger.getLogger(ScoreController.class);
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,15 +32,14 @@ public class ScoreController extends ServerServlet{
         try {
 			doProcess(req, resp);
 		} catch (Exception ex) {
-			//log.error(LogUtil.stackTrace(ex));
+			log.error(LogUtil.stackTrace(ex));
 		}
     
     }
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-        System.out.print(req.getRequestURI());
-        System.out.print(req);
+        ScoreAction.getInstance().handle(req, resp);
     }
     
     
