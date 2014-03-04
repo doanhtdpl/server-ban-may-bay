@@ -38,7 +38,6 @@ public class DeviceController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-        System.out.print(req.getRequestURI());
-        System.out.print(req);
+       DeviceAction.getInstance().handle(req, resp);
     }
 }
