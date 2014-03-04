@@ -73,7 +73,7 @@ public class ProfileAction {
         Map<String,String> data = new HashMap<>();
         
        data =  Redis_Rd.getInstance().hget(key);
-       
+       data.put(ShareMacros.FACEID, faceId);
        JSONObject mapjson = new JSONObject();
        mapjson.putAll(data);
        

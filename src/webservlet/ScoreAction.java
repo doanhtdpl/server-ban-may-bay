@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import share.KeysDefinition;
 import share.ShareMacros;
+import utilities.time.UtilTime;
 
 /**
  *
@@ -47,7 +48,7 @@ public class ScoreAction {
         String appId = reqData.get(ShareMacros.APPID);
         String faceId = reqData.get(ShareMacros.FACEID);
         String score =String.valueOf( reqData.get(ShareMacros.SCORE));
-         String time = String.valueOf(reqData.get(ShareMacros.TIME));
+         String time = String.valueOf(UtilTime.getTimeNow());//String.valueOf(reqData.get(ShareMacros.TIME));
         
         String key = KeysDefinition.getKeyAppUser(faceId, appId);
         Map<String,String> data = new HashMap<>();
