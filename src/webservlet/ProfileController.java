@@ -38,7 +38,6 @@ public class ProfileController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-        System.out.print(req.getRequestURI());
-        System.out.print(req);
+        ProfileAction.getInstance().handle(req, resp);
     }
 }
