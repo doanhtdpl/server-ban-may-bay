@@ -7,13 +7,16 @@
 package webservlet;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import db.Redis_Rd;
 import db.Redis_W;
 import java.io.PrintWriter;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
@@ -114,27 +117,29 @@ public class FriendAction {
 //            
 //         }
        
-        Map<String,String> data = new HashMap<String,String>();
+         List<Object> data = new ArrayList<Object>();
         
         for(int j = 0; j < friendsFace.size(); j++) 
         {
-             String friendId = KeysDefinition.getKeyUser(friendsFace.toArray()[j].toString());
-            String name = Redis_Rd.getInstance().Hget(friendId, ShareMacros.NAME);
+            String friendId = friendsFace.toArray()[j].toString();
+            String keyFriend = KeysDefinition.getKeyUser(friendId);
+            String name = Redis_Rd.getInstance().Hget(keyFriend, ShareMacros.NAME);
             String score = Redis_Rd.getInstance().Hget(KeysDefinition.getKeyAppUser(friendId, appId), ShareMacros.SCORE);
             if(score != null && name != null)
             {
                 Map<String,String> friendProfile = new HashMap<String,String>();
                 friendProfile.put(ShareMacros.NAME, name);
                 friendProfile.put(ShareMacros.SCORE, score);
+                friendProfile.put(ShareMacros.FACEID, friendId);
                 
-                data.put(friendId, score);
+                data.add( friendProfile);
             } 
                 
         }
         
        
        JSONObject mapjson = new JSONObject();
-       mapjson.putAll(data);
+       mapjson.put(ShareMacros.FRIENDLIST,data);
        
         out(mapjson.toJSONString(), resp);
      }
@@ -144,9 +149,11 @@ public class FriendAction {
          Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-       
-       
-         ArrayList<String> friendList = (ArrayList<String>) JSONValue.parse(String.valueOf(reqData.get(ShareMacros.FRIENDLIST)));
+        Gson gson = new Gson();
+        
+         String listStr = gson.toJson(reqData.get(ShareMacros.FRIENDLIST));
+         
+         ArrayList<String> friendList = (ArrayList<String>) JSONValue.parse( listStr );
         String faceId = reqData.get(ShareMacros.FACEID);
         
         String key = KeysDefinition.getKey_ListFriends(faceId);
@@ -158,7 +165,7 @@ public class FriendAction {
        
         
         String check;
-        if (Redis_W.getInstance().sadd(key, friends) == friends.length)
+        if (Redis_W.getInstance().sadd(key, friends) != -1)
             check = "true";
         else
             check = "false";
@@ -166,5 +173,47 @@ public class FriendAction {
         JSONObject mapjson = new JSONObject();
        mapjson.put(ShareMacros.SUSSCES, check);
        out(mapjson.toJSONString(), resp);
+     }
+     
+     public void getFriendList2(HttpServletRequest req , HttpServletResponse resp)
+     {
+         Map<String, String> reqData = new HashMap<String,String>();
+        reqData = getDataJsonReq(req);
+        
+        String faceId = reqData.get(ShareMacros.FACEID);
+        String appId = reqData.get(ShareMacros.APPID);
+        
+        String[] key =  new String[]{};
+       key[0] =  KeysDefinition.getKey_ListFriends(faceId);
+       key[1] = KeysDefinition.getKeyUserList();
+        Set<String> friends = new HashSet<String>();        
+       friends =  Redis_Rd.getInstance().sInter(key);
+       
+       
+         List<Object> data = new ArrayList<Object>();
+        
+        for(int j = 0; j < friends.size(); j++) 
+        {
+            String friendId = friends.toArray()[j].toString();
+            String keyFriend = KeysDefinition.getKeyUser(friendId);
+            String name = Redis_Rd.getInstance().Hget(keyFriend, ShareMacros.NAME);
+            String score = Redis_Rd.getInstance().Hget(KeysDefinition.getKeyAppUser(friendId, appId), ShareMacros.SCORE);
+            if(score != null && name != null)
+            {
+                Map<String,String> friendProfile = new HashMap<String,String>();
+                friendProfile.put(ShareMacros.NAME, name);
+                friendProfile.put(ShareMacros.SCORE, score);
+                friendProfile.put(ShareMacros.FACEID, friendId);
+                
+                data.add( friendProfile);
+            } 
+                
+        }
+        
+       
+       JSONObject mapjson = new JSONObject();
+       mapjson.put(ShareMacros.FRIENDLIST,data);
+       
+        out(mapjson.toJSONString(), resp);
      }
 }

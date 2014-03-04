@@ -7,6 +7,7 @@ package db;
 import libCore.Config;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
@@ -19,6 +20,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Tuple;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Response;
 
 /**
  *
@@ -603,7 +606,7 @@ public class RedisClient {
         Jedis jedis = null;
         try{
             jedis = Pool.getResource();
-            ret = jedis.hget(key, key);
+            ret = jedis.hget(key, field);
         }catch(Exception e)
         {
             logger.error("Exception in RedisClient.hget",e);
@@ -624,7 +627,7 @@ public class RedisClient {
         Jedis jedis = null;
         try{
             jedis = Pool.getResource();
-            ret = jedis.hget(key, key);
+            ret = jedis.hget(key, field);
         }catch(Exception e)
         {
             logger.error("Exception in RedisClient.hget",e);
@@ -880,6 +883,132 @@ public class RedisClient {
         
          return ret;
      }
+       
+       public Set<String> sinter(String[] key) {
+        Set<String>  ret = new HashSet<String>();
+
+        Jedis jedis = null;
+        try {
+            jedis = Pool.getResource();
+            ret = jedis.sdiff(key);
+        } catch (Exception ex) {
+            logger.error("Exception in RedisClient.zcard", ex);
+            ret = null;
+        } finally {
+            if (jedis != null) {
+                Pool.returnResource(jedis);
+            }
+        }
+        return ret;
+    }
+       
+       public Map<String,Boolean> checkExits(List<String> keys)
+       {
+           Map<String,Boolean> keyExits = new HashMap<String,Boolean>();
+            Map<String,Response<Boolean>> keysResp= new HashMap<String,Response<Boolean>> ();
+            
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                
+                Pipeline p = jedis.pipelined();
+                
+                for (int i = 0; i < keys.size(); i++) {
+                    
+                   keysResp.put(keys.get(i),p.exists(keys.get(i)) );
+                    
+                }
+                               
+                p.sync(); 
+                
+                for (Map.Entry<String, Response<Boolean>> entry : keysResp.entrySet()) {
+                    String string = entry.getKey();
+                    Response<Boolean> response = entry.getValue();
+                    
+                    keyExits.put(string, response.get());
+                }
+                
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.zcard", ex);
+                keyExits = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return keyExits;
+       }
+       
+       public int isExits(List<String> keys)
+       {
+           int countCheck = 0;
+           Map<String,Response<Boolean>> keysResp= new HashMap<String,Response<Boolean>> ();
+            
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                
+                Pipeline p = jedis.pipelined();
+                
+                for (int i = 0; i < keys.size(); i++) {
+                    
+                   keysResp.put(keys.get(i),p.exists(keys.get(i)) );
+                    
+                }
+                               
+                p.sync(); 
+                
+                for (Map.Entry<String, Response<Boolean>> entry : keysResp.entrySet()) {
+                    String string = entry.getKey();
+                    Response<Boolean> response = entry.getValue();
+                    
+                    if(response.get())
+                        countCheck++;
+                }
+                
+                if(countCheck == keys.size())
+                    return 1;
+                
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.zcard", ex);
+                return -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return 0;
+       }
+       
+       
+//       public Map<String,Object> pipeline(Map<>)
+//     {
+//         Map<String,Object> ret = new HashMap<String,Object>();
+//         
+//          Jedis jedis = null;
+//        try {
+//            jedis = Pool.getResource();
+//            
+//            Pipeline p = jedis.pipelined();
+//            p.
+//            
+//            
+//            ret = jedis.lpush(key,val);
+//        } catch (Exception ex) {
+//            logger.error("Exception in RedisClient.getAutoId", ex);
+//            ret = null;
+//        } finally {
+//            if (jedis != null) {
+//                Pool.returnResource(jedis);
+//            }
+//        }
+//        
+//         return ret;
+//     } 
+       
+       
     
     public static void main(String[] args) throws TException {
         //RedisClient rc = new RedisClient("192.168.182.132", 6379, 500, "", 9);

@@ -70,14 +70,15 @@ public class DeviceAction {
          Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-         String deviceId = reqData.get(ShareMacros.APPID);
+         String deviceId = reqData.get(ShareMacros.DEVICEID);
         String faceId = reqData.get(ShareMacros.FACEID);
         
         String key = KeysDefinition.getKeyDevice(faceId, deviceId);
         Map<String,String> data = new HashMap<>();
         
        data =  Redis_Rd.getInstance().hget(key);
-       
+       data.put(ShareMacros.DEVICEID, deviceId);
+       data.put(ShareMacros.FACEID, faceId);
        JSONObject mapjson = new JSONObject();
        mapjson.putAll(data);
        
