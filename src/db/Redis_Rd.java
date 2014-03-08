@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import redis.clients.jedis.Tuple;
 /**
  *
  * @author linhta
@@ -40,7 +41,7 @@ public class Redis_Rd {
     }
     
     
-    public static byte[] get( byte[] key)
+    public byte[] get( byte[] key)
     {
         byte[] data = null;
         
@@ -49,7 +50,7 @@ public class Redis_Rd {
         return data;
     }
     
-    public static String get(String key)
+    public String get(String key)
     {
         String data = null;
         
@@ -58,7 +59,7 @@ public class Redis_Rd {
         return data;
     }
     
-    public static Map<String,String> ranb()
+    public Map<String,String> ranb()
     {
         Map<String,String> data = new HashMap<String, String>();
         
@@ -67,7 +68,7 @@ public class Redis_Rd {
         return data;
     }
     
-     public static Map<byte[],byte[]> hget( byte[] key)
+     public Map<byte[],byte[]> hget( byte[] key)
     {
         Map<byte[],byte[]> data = null;
         
@@ -76,7 +77,7 @@ public class Redis_Rd {
         return data;
     }
      
-      public static Map<String,String> hget( String key)
+      public Map<String,String> hget( String key)
     {
         Map<String,String> data = null;
         
@@ -85,7 +86,7 @@ public class Redis_Rd {
         return data;
     }
      
-     public static byte[] srand( byte[] key)
+     public byte[] srand( byte[] key)
     {
         byte[] data = null;
         
@@ -94,7 +95,7 @@ public class Redis_Rd {
         return data;
     }
      
-       public static String srand( String key)
+       public String srand( String key)
     {
         String data = null;
         
@@ -103,7 +104,7 @@ public class Redis_Rd {
         return data;
     }
        
-      public static Set<byte[]> smember( byte[] key)
+      public Set<byte[]> smember( byte[] key)
     {
          Set<byte[]> data = null;
         
@@ -112,7 +113,7 @@ public class Redis_Rd {
         return data;
     }
       
-       public static Set<String> smember( String key)
+       public Set<String> smember( String key)
     {
          Set<String> data = null;
         
@@ -121,7 +122,7 @@ public class Redis_Rd {
         return data;
     }
       
-      public static List<byte[]> getHm (byte[] key, byte[] hm)
+      public List<byte[]> getHm (byte[] key, byte[] hm)
      {
           List<byte[]> data = new ArrayList<byte[]>();
         
@@ -130,7 +131,7 @@ public class Redis_Rd {
             return data;
      }
       
-      public static String Hget(String key,String field)
+      public String Hget(String key,String field)
       {
           String ret = "";
           
@@ -139,7 +140,7 @@ public class Redis_Rd {
           return ret;
       }
       
-      public static byte[] Hget(byte[] key,byte[] field)
+      public byte[] Hget(byte[] key,byte[] field)
       {
           byte[] ret = null;
           
@@ -148,7 +149,7 @@ public class Redis_Rd {
           return ret;
       }
       
-      public static boolean isExits(byte[] key)
+      public boolean isExits(byte[] key)
       {
           Boolean ret = true;
           
@@ -157,7 +158,7 @@ public class Redis_Rd {
           return ret;
       }
       
-      public static boolean isExits(String key)
+      public boolean isExits(String key)
       {
           Boolean ret = true;
           
@@ -166,7 +167,7 @@ public class Redis_Rd {
           return ret;
       }
       
-      public static List<byte[]> list_getAll(byte[] key)
+      public List<byte[]> list_getAll(byte[] key)
       {
           List<byte[]> ret = new ArrayList<byte[]>();
           
@@ -175,7 +176,7 @@ public class Redis_Rd {
           return ret;
       }
       
-       public static List<String> list_getAll(String key)
+       public List<String> list_getAll(String key)
       {
           List<String> ret = new ArrayList<String>();
           
@@ -186,7 +187,7 @@ public class Redis_Rd {
        
        
        
-       public static long list_push(String key, String val)
+       public long list_push(String key, String val)
        {
            long ret = 0;
            
@@ -195,7 +196,7 @@ public class Redis_Rd {
            return ret;
        }
        
-       public static long list_push(byte[] key, byte[] val)
+       public long list_push(byte[] key, byte[] val)
        {
            long ret = 0;
            
@@ -204,7 +205,7 @@ public class Redis_Rd {
            return ret;
        }
        
-       public static Set<String> sInter(String[] key)
+       public Set<String> sInter(String[] key)
     {
         Set<String>  data = new HashSet<String>();
         
@@ -212,4 +213,25 @@ public class Redis_Rd {
         
         return data;
     }
+       
+       public Set<String> zMembesTopHighScore(String key, long start, long end)
+       {
+           Set<String>  data = new HashSet<String>();
+        
+            data = _jedis.zrevrange(key,start,end);
+
+            return data;
+       }
+       
+       public Map<String,Double> zgetTopHighScore(String key, long start, long end)
+       {
+           Map<String,Double>  data = new HashMap<String,Double>();
+        
+           Set<Tuple> listUser = _jedis.zrangeWithScores(key,start,end);
+           for (Tuple tuple : listUser) {
+               data.put(tuple.getElement(), Double.valueOf(tuple.getScore()));
+           }
+ 
+            return data;
+       }
 }
