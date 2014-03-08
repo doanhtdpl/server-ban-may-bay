@@ -3,15 +3,24 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/FriendAction.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/share/KeysDefinition.java</file>
             <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/ScoreController.java</file>
-            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/ProfileController.java</file>
-            <file>file:/D:/Svn/ServerBanMayBay/src/db/RedisClient.java</file>
             <file>file:/D:/Svn/ServerBanMayBay/src/httpservice/WebServer.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/db/RedisClient.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/ScoreAction.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/db/Redis_W.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/libCore/LogUtil.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/DeviceController.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/FriendAction.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/ProfileController.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/libCore/Config.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/db/Redis_Pipeline.java</file>
             <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/DeviceAction.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/db/Redis_Rd.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/src/libCore/Util.java</file>
             <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/ProfileAction.java</file>
             <file>file:/D:/Svn/ServerBanMayBay/src/share/ShareMacros.java</file>
-            <file>file:/D:/Svn/ServerBanMayBay/src/webservlet/DeviceController.java</file>
+            <file>file:/D:/Svn/ServerBanMayBay/conf/development.config.ini</file>
         </group>
     </open-files>
 </project-private>
