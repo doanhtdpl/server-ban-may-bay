@@ -18,6 +18,7 @@ public class ShareMacros {
     
     public static String APPID = "appId";
     public static String FACEID = "fbId";
+    public static String MEID = "meId";
     public static String SCORE = "score";
     public static String TIME = "time";
     public static String NAME = "fbName";
@@ -28,8 +29,14 @@ public class ShareMacros {
     public static String CONFIG = "deviceConfig";
     public static String PHONENUMBER = "devicePhoneNumber";    
     public static String FRIENDLIST = "list";    
+    public static String ID = "id";  
     
     public static String METHOD = "method"; 
     public static String SUSSCES = "isSuccess";
     
+    public static String METHODTOP = "top";
+    public static String METHODLIST = "list";
+    public static String TOPSCORECOUNT = "count";
+    public static String HIGHSCORESTART = "start";
+    public static String HIGHSCOREEND = "end";
 }

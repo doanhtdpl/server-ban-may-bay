@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import share.KeysDefinition;
 import share.ShareMacros;
-
+import libCore.Util;
 /**
  *
  * @author LinhTA
@@ -41,18 +41,20 @@ public class ProfileAction {
         Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-        String faceId = reqData.get(ShareMacros.FACEID);
+        String faceId = "";
+        String meId = "";
+        String uid = Util.getUserId(reqData, faceId, meId);
         String name = reqData.get(ShareMacros.NAME);
         String email = reqData.get(ShareMacros.EMAIL);
         
         
-        String key = KeysDefinition.getKeyUser(faceId);
+       
         Map<String,String> data = new HashMap<>();
         data.put(ShareMacros.NAME, name);
         data.put(ShareMacros.EMAIL, email);
         
         String check;
-        if (Redis_W.getInstance().hset(key, data) != "-1" && Redis_W.getInstance().sadd(KeysDefinition.getKeyUserList(),key) != -1)
+        if (Redis_W.getInstance().hset(uid, data) != "-1" && Redis_W.getInstance().sadd(KeysDefinition.getKeyUserList(),uid) != -1)
             check = "true";
         else
             check = "false";
@@ -67,13 +69,15 @@ public class ProfileAction {
         Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-        String faceId = reqData.get(ShareMacros.FACEID);
-        
-        String key = KeysDefinition.getKeyUser(faceId);
+       String faceId = "";
+        String meId = "";
+        String uid = Util.getUserId(reqData, faceId, meId);
+       
         Map<String,String> data = new HashMap<>();
         
-       data =  Redis_Rd.getInstance().hget(key);
+       data =  Redis_Rd.getInstance().hget(uid);
        data.put(ShareMacros.FACEID, faceId);
+       data.put(ShareMacros.MEID,meId);
        JSONObject mapjson = new JSONObject();
        mapjson.putAll(data);
        

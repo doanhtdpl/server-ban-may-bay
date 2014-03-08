@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import share.KeysDefinition;
 import share.ShareMacros;
+import libCore.Util;
 
 /**
  *
@@ -41,14 +42,15 @@ public class DeviceAction {
          Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-         String deviceId = reqData.get(ShareMacros.DEVICEID);
-        String faceId = reqData.get(ShareMacros.FACEID);
+        String deviceId = reqData.get(ShareMacros.DEVICEID);
+        String uId = Util.getUserId(reqData,"",""); 
+        
         String token = reqData.get(ShareMacros.TOKEN);
         String config = reqData.get(ShareMacros.CONFIG);
         String phone = reqData.get(ShareMacros.PHONENUMBER);
         
         
-        String key = KeysDefinition.getKeyDevice(faceId, deviceId);
+        String key = KeysDefinition.getKeyDevice(uId, deviceId);
         Map<String,String> data = new HashMap<>();
         data.put(ShareMacros.TOKEN, token);
         data.put(ShareMacros.CONFIG, config);
@@ -71,14 +73,19 @@ public class DeviceAction {
         reqData = getDataJsonReq(req);
         
          String deviceId = reqData.get(ShareMacros.DEVICEID);
-        String faceId = reqData.get(ShareMacros.FACEID);
         
-        String key = KeysDefinition.getKeyDevice(faceId, deviceId);
+         String meID = "";
+         String faceID = "";
+         String uid = Util.getUserId(reqData,faceID, meID);
+        
+        String key = KeysDefinition.getKeyDevice(uid, deviceId);
         Map<String,String> data = new HashMap<>();
         
        data =  Redis_Rd.getInstance().hget(key);
        data.put(ShareMacros.DEVICEID, deviceId);
-       data.put(ShareMacros.FACEID, faceId);
+       data.put(ShareMacros.FACEID, faceID);
+       data.put(ShareMacros.MEID, meID);
+       data.put(ShareMacros.MEID, meID);
        JSONObject mapjson = new JSONObject();
        mapjson.putAll(data);
        

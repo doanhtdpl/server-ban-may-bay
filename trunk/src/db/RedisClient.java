@@ -122,7 +122,7 @@ public class RedisClient {
         try {
             jedis = Pool.getResource();
             ret = jedis.get(key);
-
+           
         } catch (Exception ex) {
             logger.error("Exception in RedisClient.get", ex);
         } finally {
@@ -203,7 +203,7 @@ public class RedisClient {
      * @param score of member
      * @return number of member inserted
      */
-    public long zadd(String key, String member, double score) {
+    public long zadd(String key, double score,String member) {
         long ret = 0;
 
         Jedis jedis = null;
@@ -980,6 +980,27 @@ public class RedisClient {
             }
            
            return 0;
+       }
+       
+       // high to low : top hight score
+       public Set<String> zrevrange(String key, long start)
+       {
+           Set<String> ret = new HashSet<>();
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.sdiff(key);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.zcard", ex);
+                ret = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
        }
        
        

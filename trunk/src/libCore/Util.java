@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
+import share.KeysDefinition;
+import share.ShareMacros;
 
 /**
  *
@@ -53,4 +55,39 @@ public class Util {
        return strData;
    }
     
+   public static String getUserId(Map<String,String> data,String faceId ,String meId)
+   {
+       String uID = "";
+       
+       if(data.containsKey(ShareMacros.FACEID) && data.containsKey(ShareMacros.MEID))
+       {
+           meId = KeysDefinition.getKeyUserFB(data.get(ShareMacros.MEID)); 
+           faceId = KeysDefinition.getKeyUserFB(data.get(ShareMacros.FACEID)); 
+           
+           if(meId.isEmpty() || meId == "" || meId == null)
+           {
+               uID = faceId;
+           }
+           else
+           {
+               uID = meId;
+           }
+       }
+       else    
+       if(data.containsKey(ShareMacros.FACEID))
+       {
+           faceId = data.get(ShareMacros.FACEID);
+           uID = KeysDefinition.getKeyUserFB(faceId);           
+           meId = "";
+       }
+       else if(data.containsKey(ShareMacros.MEID))
+       {
+            meId = data.get(ShareMacros.MEID);
+            uID = KeysDefinition.getKeyUserME(meId);  
+            faceId = "";
+           
+       }
+       
+       return uID;
+   }
 }

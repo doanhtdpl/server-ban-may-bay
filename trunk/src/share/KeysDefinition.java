@@ -18,8 +18,10 @@ public class KeysDefinition {
     static String LIST_FRIENDS = "F_";
     static String LIST_DEVICE = "D_";
     
-    static  String USER = "U_";
+    static  String USER_FB = "Fb_";
+    static  String USER_ME = "ME_";
     static  String USERS = "Users";
+    static  String USERSCORES = "UserScores";
     
     public static byte[] ramdomKey()
     {
@@ -46,14 +48,30 @@ public class KeysDefinition {
         return id;
     }
         
-        public static String getKeyUser(String uid)
+        public static String getKeyUserScores()
         {
-            return USER +uid;
+            return USERSCORES;
         }
         
-        public static String getKeyUser(int uid)
+        
+        public static String getKeyUserFB(String uid)
         {
-            return  USER + String.valueOf(uid);
+            return USER_FB +uid;
+        }
+        
+        public static String getKeyUserFB(int uid)
+        {
+            return  USER_FB + String.valueOf(uid);
+        }
+        
+        public static String getKeyUserME(String uid)
+        {
+            return USER_ME +uid;
+        }
+        
+        public static String getKeyUserME(int uid)
+        {
+            return  USER_ME + String.valueOf(uid);
         }
         
         public static String getKeyUserList()

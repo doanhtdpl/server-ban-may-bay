@@ -37,7 +37,7 @@ public class Redis_W {
     }
     
     
-    public static String set(byte[] key, byte[] val)
+    public String set(byte[] key, byte[] val)
     {
         String ret = "0";
         
@@ -47,7 +47,7 @@ public class Redis_W {
         
     }
     
-    public static long set(String key, String val)
+    public long set(String key, String val)
     {
         long ret = 0;
         
@@ -57,7 +57,7 @@ public class Redis_W {
         
     }
     
-    public static String hset(byte[] key, Map<byte[],byte[]> val )
+    public String hset(byte[] key, Map<byte[],byte[]> val )
     {
         String ret = "0";
         
@@ -66,7 +66,7 @@ public class Redis_W {
         return ret;
     }
     
-     public static String hset(String key, Map<String,String> val )
+     public String hset(String key, Map<String,String> val )
     {
         String ret = "0";
         
@@ -75,7 +75,7 @@ public class Redis_W {
         return ret;
     }
     
-    public static long sadd(byte[] key, byte[] val)
+    public long sadd(byte[] key, byte[] val)
     {
         long ret = 0;
         
@@ -86,7 +86,7 @@ public class Redis_W {
     
 //     String[] a = {"x","b"};           
 //     Redis_W.getInstance().sadd("g", a);
-     public static long sadd(String key, String[] val)
+     public long sadd(String key, String[] val)
     {
         long ret = 0;
         
@@ -95,7 +95,7 @@ public class Redis_W {
         return ret;
     }
     
-    public static long sadd(String key, String val)
+    public long sadd(String key, String val)
     {
         long ret = 0;
         
@@ -104,7 +104,7 @@ public class Redis_W {
         return ret;
     }
     
-    public static long smove(byte[] dstKeys,byte[] members,byte[] key)
+    public long smove(byte[] dstKeys,byte[] members,byte[] key)
     {
         long ret = 0 ;
         
@@ -113,7 +113,7 @@ public class Redis_W {
         return ret;
     }
     
-     public static long smove(String dstKeys,String members,String key)
+     public long smove(String dstKeys,String members,String key)
     {
         long ret = 0 ;
         
@@ -122,7 +122,7 @@ public class Redis_W {
         return ret;
     }
      
-      public static long lpudh(String list,String key )
+      public long lpudh(String list,String key )
     {
         long ret = 0 ;
         
@@ -131,7 +131,7 @@ public class Redis_W {
         return ret;
     }
       
-       public static long lpudh(byte[] key,byte[] list)
+       public long lpudh(byte[] key,byte[] list)
     {
         long ret = 0 ;
         
@@ -139,6 +139,15 @@ public class Redis_W {
         
         return ret;
     }
+       
+       public long zAdd(String key, double score, String member)
+       {
+           long ret = 0;
+           
+           ret = _jedis.zadd(key, score,member);
+           
+           return ret;
+       }
        
        public static void main(String[] args) {
            
