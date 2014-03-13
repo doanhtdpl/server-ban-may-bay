@@ -7,6 +7,8 @@
 package share;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -48,9 +50,9 @@ public class KeysDefinition {
         return id;
     }
         
-        public static String getKeyUserScores()
+        public static String getKeyAppScores(String appId)
         {
-            return USERSCORES;
+            return USERSCORES +"_"+ appId;
         }
         
         
@@ -125,5 +127,24 @@ public class KeysDefinition {
         public static String getKeyDevice(int uid,int deviceid)
         {
             return  String.valueOf(uid) +"_D_"+ String.valueOf(deviceid);
+        }
+        
+        public static Map<String,String> getUidResponse(String id)
+        {
+            Map<String,String> data = new HashMap<String,String>();
+            
+            String meID = "";
+            String fID = "";
+            
+            String[] idArr = id.split("_");
+            if(idArr[0] == USER_FB)
+                fID = idArr[1];
+            else if(idArr[0] == USER_ME)
+                meID = idArr[1];
+            
+            data.put(ShareMacros.FACEID, id);
+            data.put(ShareMacros.MEID, id);
+            
+            return data;
         }
 }

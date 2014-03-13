@@ -70,7 +70,7 @@ public class FriendAction {
         try {
             prepareHeader(resp);
             if(req.getParameter(ShareMacros.METHOD).matches("get"))
-                getFriendList(req, resp);
+                getFriendList2(req, resp);
             else
                 setFriendList(req, resp);
             
@@ -123,11 +123,14 @@ public class FriendAction {
         {
             String friendId = friendsFace.toArray()[j].toString();
             
-            String faceID  = "";
-            String meID = "";
-            String uid =Util.getUserId(reqData, faceId, meID);
+            Map<String,String> ids = new HashMap<String,String>();
+            ids = Util.getUserId(reqData);
+            String meID = ids.get(ShareMacros.MEID);
+            String faceID = ids.get(ShareMacros.FACEID);
+            String uid = ids.get(ShareMacros.ID);
+        
             String name = Redis_Rd.getInstance().Hget(uid, ShareMacros.NAME);
-            String score = Redis_Rd.getInstance().Hget(KeysDefinition.getKeyAppUser(friendId, appId), ShareMacros.SCORE);
+            String score = Redis_Rd.getInstance().Hget(KeysDefinition.getKeyAppUser(uid, appId), ShareMacros.SCORE);
             if(score != null && name != null)
             {
                 Map<String,String> friendProfile = new HashMap<String,String>();
@@ -157,9 +160,13 @@ public class FriendAction {
          String listStr = gson.toJson(reqData.get(ShareMacros.FRIENDLIST));
          
          ArrayList<String> friendList = (ArrayList<String>) JSONValue.parse( listStr );
-        String faceId = reqData.get(ShareMacros.FACEID);
+         Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meID = ids.get(ShareMacros.MEID);
+        String faceID = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID);
         
-        String key = KeysDefinition.getKey_ListFriends(faceId);
+        String key = KeysDefinition.getKey_ListFriends(uid);
       
         String[] friends = new String[friendList.size()]; 
          for (int i = 0; i < friendList.size(); i++) {
@@ -183,12 +190,15 @@ public class FriendAction {
          Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-          String faceID  = "";
-            String meID = "";
-            String uid =Util.getUserId(reqData, faceID, meID);
+         Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meID = ids.get(ShareMacros.MEID);
+        String faceID = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID); 
+        
         String appId = reqData.get(ShareMacros.APPID);
         
-        String[] key =  new String[]{};
+        String[] key =  new String[2];
        key[0] =  KeysDefinition.getKey_ListFriends(uid);
        key[1] = KeysDefinition.getKeyUserList();
         Set<String> friends = new HashSet<String>();        

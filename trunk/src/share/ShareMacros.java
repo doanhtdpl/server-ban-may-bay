@@ -39,4 +39,5 @@ public class ShareMacros {
     public static String TOPSCORECOUNT = "count";
     public static String HIGHSCORESTART = "start";
     public static String HIGHSCOREEND = "end";
+    public static String INDEX          =   "index";
 }

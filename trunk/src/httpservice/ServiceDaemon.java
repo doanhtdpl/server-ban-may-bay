@@ -21,8 +21,9 @@ public class ServiceDaemon {
         private static Logger logger_ = Logger.getLogger(ServiceDaemon.class);
     
     public static void main(String[] args) throws Exception {
+       
         LogUtil.init();
-        
+        logger_.info("version 2.0 : Me-Fb + Topscore");
         WebServer webserver = new WebServer();
         String pidFile = System.getProperty("pidfile");
         try {

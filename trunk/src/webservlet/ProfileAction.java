@@ -41,9 +41,13 @@ public class ProfileAction {
         Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-        String faceId = "";
-        String meId = "";
-        String uid = Util.getUserId(reqData, faceId, meId);
+         Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meID = ids.get(ShareMacros.MEID);
+        String faceID = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID);
+        
+        
         String name = reqData.get(ShareMacros.NAME);
         String email = reqData.get(ShareMacros.EMAIL);
         
@@ -62,6 +66,9 @@ public class ProfileAction {
         JSONObject mapjson = new JSONObject();
        mapjson.put(ShareMacros.SUSSCES, check);
        out(mapjson.toJSONString(), resp);
+       
+       String appId = reqData.get(ShareMacros.APPID);
+        addAppId(uid, appId);
     }
     
     public void getInfo( HttpServletRequest req, HttpServletResponse resp )
@@ -69,9 +76,11 @@ public class ProfileAction {
         Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
-       String faceId = "";
-        String meId = "";
-        String uid = Util.getUserId(reqData, faceId, meId);
+        Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meId = ids.get(ShareMacros.MEID);
+        String faceId = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID);
        
         Map<String,String> data = new HashMap<>();
         
@@ -133,5 +142,22 @@ public class ProfileAction {
          reqData = (HashMap<String,String>) j;
          
          return reqData;
+     }
+     
+     private void addAppId(String uid, String appId)
+     {
+         boolean checkExits = false;
+         
+         String key = KeysDefinition.getKeyAppUser(uid, appId);
+         checkExits = Redis_Rd.getInstance().isExits(key);
+         
+         if(!checkExits)
+         {
+             Map<String,String> dataFake = new HashMap<String,String>();
+             dataFake.put(ShareMacros.SCORE, "0");
+             dataFake.put(ShareMacros.TIME, "-1");
+             
+             Redis_W.getInstance().hset(key, dataFake);
+         } 
      }
 }
