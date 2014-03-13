@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import db.Redis_Rd;
 import db.Redis_W;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +47,11 @@ public class ScoreAction {
         reqData = getDataJsonReq(req);
         
         String appId = reqData.get(ShareMacros.APPID);
-        String faceId = "";
-        String meId= "";
-        String uid = Util.getUserId(reqData, faceId, meId);
+         Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meID = ids.get(ShareMacros.MEID);
+        String faceID = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID);
         String score =String.valueOf( reqData.get(ShareMacros.SCORE));
          String time = String.valueOf(UtilTime.getTimeNow());//String.valueOf(reqData.get(ShareMacros.TIME));
         
@@ -71,9 +74,10 @@ public class ScoreAction {
             Map<String,String> data = new HashMap<>();
             data.put(ShareMacros.SCORE,score);
             data.put(ShareMacros.TIME, time);
+            
+            String keyAppScores = KeysDefinition.getKeyAppScores(appId);
 
-
-            if (Redis_W.getInstance().hset(key, data) != "-1" && Redis_W.getInstance().zAdd(key, Double.parseDouble(score),uid) != -1)
+            if (Redis_W.getInstance().hset(key, data) != "-1" && Redis_W.getInstance().zAdd(keyAppScores, Double.parseDouble(score),uid) != -1)
                 check = "true";
             else
                 check = "false";
@@ -83,7 +87,7 @@ public class ScoreAction {
        
         
        mapjson.put(ShareMacros.SUSSCES, check);
-       
+       mapjson.put(ShareMacros.SCORE, score);
         out(mapjson.toJSONString(), resp);
     }
     
@@ -93,9 +97,11 @@ public class ScoreAction {
         reqData = getDataJsonReq(req);
         
          String appId = reqData.get(ShareMacros.APPID);
-        String faceId = "";
-        String meId= "";
-        String uid = Util.getUserId(reqData, faceId, meId);
+         Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meID = ids.get(ShareMacros.MEID);
+        String faceID = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID);
         
         String key = KeysDefinition.getKeyAppUser(uid, appId);
         Map<String,String> data = new HashMap<>();
@@ -116,16 +122,17 @@ public class ScoreAction {
     {
          Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
-        
+        String appId = reqData.get(ShareMacros.APPID);
         String countStr = reqData.get(ShareMacros.TOPSCORECOUNT);
         long count = Long.valueOf(countStr);
         
-        String key = KeysDefinition.getKeyUserScores();
-        Map<String,Double> data = new HashMap<String,Double>();
-        data = Redis_Rd.getInstance().zgetTopHighScore(key, 0, count);
-        
+        String key = KeysDefinition.getKeyAppScores(appId);
+        List<Object> data = new ArrayList<Object>();
+        data = getHighScore(key, 0, count);
+       
         JSONObject mapjson = new JSONObject();
-        mapjson.putAll(data);
+        mapjson.put(ShareMacros.APPID, appId);
+        mapjson.put(ShareMacros.FRIENDLIST, data);
        
         out(mapjson.toJSONString(), resp);
     }
@@ -135,17 +142,19 @@ public class ScoreAction {
          Map<String, String> reqData = new HashMap<String,String>();
         reqData = getDataJsonReq(req);
         
+        String appId = reqData.get(ShareMacros.APPID);
         String startStr = reqData.get(ShareMacros.HIGHSCORESTART);
         String endStr = reqData.get(ShareMacros.HIGHSCOREEND);
         long start = Long.valueOf(startStr);
-        long end = Long.valueOf(endStr);
-        
-        String key = KeysDefinition.getKeyUserScores();
-        Map<String,Double> data = new HashMap<String,Double>();
-        data = Redis_Rd.getInstance().zgetTopHighScore(key, start, end);
-        
+        long end = Long.valueOf(endStr);        
+        String key = KeysDefinition.getKeyAppScores(appId);       
+       
+        List<Object> data = new ArrayList<Object>();
+        data = getHighScore(key, start, end);
+       
         JSONObject mapjson = new JSONObject();
-        mapjson.putAll(data);
+        mapjson.put(ShareMacros.APPID, appId);
+        mapjson.put(ShareMacros.FRIENDLIST, data);
        
         out(mapjson.toJSONString(), resp);
     }
@@ -176,9 +185,11 @@ public class ScoreAction {
         try {
             prepareHeader(resp);
             
-            String topScore = req.getAttribute("topscore").toString();
-            if( topScore != "" && topScore != null)
+            Object objTop = req.getAttribute("topscore");
+            
+            if( objTop != "" && objTop != null)
             {
+                 String topScore =objTop.toString();
                 if(topScore == ShareMacros.METHODTOP)
                 {
                     getTopHighScore(req, resp);
@@ -206,8 +217,6 @@ public class ScoreAction {
           Map<String,String> reqData = new HashMap<String,String>();
         
          String data2Json = request.getParameter("data");
-         
-
         
         Gson g = new Gson();
          JSONObject j = g.fromJson(data2Json, JSONObject.class);
@@ -216,4 +225,40 @@ public class ScoreAction {
          
          return reqData;
      }
+     
+     public List<Object> getHighScore(String key,long start, long end)
+     {
+        Map<String,Double> dataDB = new HashMap<String,Double>();
+        dataDB = Redis_Rd.getInstance().zgetTopHighScore(key, start, end);
+        
+         List<Object> data = new ArrayList<Object>();
+       // Map<String,String> data = new HashMap<String,String>();
+        long i = start;
+        for (Map.Entry<String, Double> entry : dataDB.entrySet()) {           
+           
+            String k = entry.getKey();
+            Double sc = entry.getValue();
+             
+            Map<String,String> user = new HashMap<String,String>();
+            Map<String,String> ids = new HashMap<String,String>();
+            ids = KeysDefinition.getUidResponse(k);
+            
+            user.put(ShareMacros.FACEID, ids.get(ShareMacros.FACEID));
+            user.put(ShareMacros.MEID, ids.get(ShareMacros.MEID));
+            user.put(ShareMacros.SCORE, sc.toString());
+            user.put(ShareMacros.INDEX, String.valueOf(i));
+            
+            data.add(user);
+            i++;
+            
+        }
+        
+        return data;
+     }
+     
+     public static void main(String[] args) {
+        String a ="FB_fgvbmnbnmb";
+         String[] b= a.split("_");
+         System.out.print(b[1]);
+    }
 }

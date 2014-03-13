@@ -55,8 +55,11 @@ public class Util {
        return strData;
    }
     
-   public static String getUserId(Map<String,String> data,String faceId ,String meId)
+   public static Map<String,String> getUserId(Map<String,String> data)
    {
+       Map<String,String> ret = new HashMap<String,String>();
+       String meId = "";
+       String faceId = "";       
        String uID = "";
        
        if(data.containsKey(ShareMacros.FACEID) && data.containsKey(ShareMacros.MEID))
@@ -88,6 +91,10 @@ public class Util {
            
        }
        
-       return uID;
+       ret.put(ShareMacros.MEID, meId);
+       ret.put(ShareMacros.FACEID, faceId);
+       ret.put(ShareMacros.ID, uID);
+       
+       return ret;
    }
 }

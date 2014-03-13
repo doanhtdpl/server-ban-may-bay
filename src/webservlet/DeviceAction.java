@@ -43,7 +43,10 @@ public class DeviceAction {
         reqData = getDataJsonReq(req);
         
         String deviceId = reqData.get(ShareMacros.DEVICEID);
-        String uId = Util.getUserId(reqData,"",""); 
+        
+        Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String uId = ids.get(ShareMacros.ID);
         
         String token = reqData.get(ShareMacros.TOKEN);
         String config = reqData.get(ShareMacros.CONFIG);
@@ -74,9 +77,12 @@ public class DeviceAction {
         
          String deviceId = reqData.get(ShareMacros.DEVICEID);
         
-         String meID = "";
-         String faceID = "";
-         String uid = Util.getUserId(reqData,faceID, meID);
+        Map<String,String> ids = new HashMap<String,String>();
+        ids = Util.getUserId(reqData);
+        String meID = ids.get(ShareMacros.MEID);
+        String faceID = ids.get(ShareMacros.FACEID);
+        String uid = ids.get(ShareMacros.ID);
+         
         
         String key = KeysDefinition.getKeyDevice(uid, deviceId);
         Map<String,String> data = new HashMap<>();

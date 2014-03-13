@@ -93,7 +93,8 @@ public class WebServer {
 
         logger_.info("==============================");
 	logger_.info("Webserver is starting to listen");
-        
+         logger_.info("version : 2 (Me-Fb + TopScore)");
+         
         server.start();
         server.join();
     }
