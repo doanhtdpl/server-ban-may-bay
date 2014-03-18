@@ -6,12 +6,14 @@
 
 package webservlet;
 
+import Model.Request.ClientRequest;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
+import webservlet.Action.DeviceAction;
 
 /**
  *
@@ -38,6 +40,10 @@ public class DeviceController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-       DeviceAction.getInstance().handle(req, resp);
+         ClientRequest request = new ClientRequest(req);
+         
+        
+        DeviceAction action = new DeviceAction();  
+        action.handle(request, resp);
     }
 }

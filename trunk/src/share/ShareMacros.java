@@ -16,6 +16,9 @@ public class ShareMacros {
     
     public static String USER = "U_";
     
+    public static String DATA = "data";
+    public static String SIGN = "sign";
+    
     public static String APPID = "appId";
     public static String FACEID = "fbId";
     public static String MEID = "meId";
@@ -32,8 +35,11 @@ public class ShareMacros {
     public static String ID = "id";  
     
     public static String METHOD = "method"; 
+    public static String METHOD_GET = "get";
+    public static String METHOD_SET = "set";
     public static String SUSSCES = "isSuccess";
     
+    public static String TOPSCORE= "topscore";
     public static String METHODTOP = "top";
     public static String METHODLIST = "list";
     public static String TOPSCORECOUNT = "count";

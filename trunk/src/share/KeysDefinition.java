@@ -7,8 +7,13 @@
 package share;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -23,6 +28,8 @@ public class KeysDefinition {
     static  String USER_FB = "Fb_";
     static  String USER_ME = "ME_";
     static  String USERS = "Users";
+    static  String USERME = "UserMEs";
+    static  String USERFB = "UserFBs";
     static  String USERSCORES = "UserScores";
     
     public static byte[] ramdomKey()
@@ -76,9 +83,24 @@ public class KeysDefinition {
             return  USER_ME + String.valueOf(uid);
         }
         
-        public static String getKeyUserList()
+        public static String getAllUserME(String appId)
         {
-            return USERS;
+            return USERME +"_"+appId;
+        }
+        
+        public static String getAllUserME(int appId)
+        {
+            return USERME +"_"+String.valueOf(appId);
+        }
+        
+        public static String getAllUserFB(String appId)
+        {
+            return USERFB +"_"+appId;
+        }
+        
+        public static String getAllUserFB(int appId)
+        {
+            return USERFB +"_"+String.valueOf(appId);
         }
         
         public static String getKey_ListFriends(int uid)
@@ -124,6 +146,16 @@ public class KeysDefinition {
             return uid +"_D_"+deviceid;
         }
         
+         public static String getHeadKeyDevices(int uid)
+        {
+            return  String.valueOf(uid) +"_D_";
+        }
+        
+          public static String getHeadKeyDevices(String uid)
+        {
+            return  uid +"_D_";
+        }
+        
         public static String getKeyDevice(int uid,int deviceid)
         {
             return  String.valueOf(uid) +"_D_"+ String.valueOf(deviceid);
@@ -147,4 +179,56 @@ public class KeysDefinition {
             
             return data;
         }
+        
+        public static List<String>  getFaceIds(List<String> ids)
+     {
+         List<String> fIds = new ArrayList<String>();
+         
+         for (Iterator<String> it = ids.iterator(); it.hasNext();) {
+             String string = it.next();
+             string = KeysDefinition.getKeyUserFB(string);
+             fIds.add(string);
+         }
+         
+         return fIds;
+     }     
+     
+     public static List<String>  getMeIds(List<String> ids)
+     {
+         List<String> fIds = new ArrayList<String>();
+         
+         for (Iterator<String> it = ids.iterator(); it.hasNext();) {
+             String string = it.next();
+             string = KeysDefinition.getKeyUserME(string);
+             fIds.add(string);
+         }
+         
+         return fIds;
+     }
+     
+     public static List<String>  getFaceScoreIds(List<String> ids,String appId)
+     {
+         List<String> fIds = new ArrayList<String>();
+         
+         for (Iterator<String> it = ids.iterator(); it.hasNext();) {
+             String string = it.next();
+             string = KeysDefinition.getKeyAppUser(string, appId);
+             fIds.add(string);
+         }
+         
+         return fIds;
+     }     
+     
+     public static List<String>  getMeScoreIds(List<String> ids,String appId)
+     {
+         List<String> fIds = new ArrayList<String>();
+         
+         for (Iterator<String> it = ids.iterator(); it.hasNext();) {
+             String string = it.next();
+             string = KeysDefinition.getKeyAppUser(string,appId);
+             fIds.add(string);
+         }
+         
+         return fIds;
+     }
 }

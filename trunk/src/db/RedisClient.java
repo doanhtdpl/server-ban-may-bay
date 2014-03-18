@@ -22,6 +22,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Tuple;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
+import share.KeysDefinition;
 
 /**
  *
@@ -890,7 +891,7 @@ public class RedisClient {
         Jedis jedis = null;
         try {
             jedis = Pool.getResource();
-            ret = jedis.sdiff(key);
+            ret = jedis.sinter(key);
         } catch (Exception ex) {
             logger.error("Exception in RedisClient.zcard", ex);
             ret = null;
@@ -929,7 +930,7 @@ public class RedisClient {
                 }
                 
             } catch (Exception ex) {
-                logger.error("Exception in RedisClient.zcard", ex);
+                logger.error("Exception in RedisClient.pipelineCheckExits", ex);
                 keyExits = null;
             } finally {
                 if (jedis != null) {
@@ -940,6 +941,94 @@ public class RedisClient {
            return keyExits;
        }
        
+        public List<String> getExits(List<String> keys,String appId,String meId, String fbId)
+       {
+           List<String> keyExits = new ArrayList<String>();
+            Map<String,Response<Boolean>> keysResp= new HashMap<String,Response<Boolean>> ();
+            
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                
+                Pipeline p = jedis.pipelined();
+                
+                for (int i = 0; i < keys.size(); i++) {
+                     String kScore = "";
+                     kScore = keys.get(i);
+                    if(meId !="" && !meId.isEmpty())
+                    {
+                        kScore = KeysDefinition.getKeyUserME(kScore);
+                    }
+                    else
+                    {
+                        kScore = KeysDefinition.getKeyUserFB(kScore);
+                    }
+                                       
+                    kScore = KeysDefinition.getKeyAppUser(kScore, appId);
+                   keysResp.put(keys.get(i),p.exists(kScore) );
+                    
+                }
+                               
+                p.sync(); 
+                
+                for (Map.Entry<String, Response<Boolean>> entry : keysResp.entrySet()) {
+                    String string = entry.getKey();
+                    Response<Boolean> response = entry.getValue();
+                    if(response.get())
+                        keyExits.add(string);
+                }
+                
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.pipelineGetExits", ex);
+                keyExits = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return keyExits;
+       }
+       
+         public List<String> getExits(List<String> keys)
+       {
+           List<String> keyExits = new ArrayList<String>();
+            Map<String,Response<Boolean>> keysResp= new HashMap<String,Response<Boolean>> ();
+            
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                
+                Pipeline p = jedis.pipelined();
+                
+                for (int i = 0; i < keys.size(); i++) {
+                    
+                    keysResp.put(keys.get(i),p.exists(keys.get(i)) );
+                    
+                }
+                               
+                p.sync(); 
+                
+                for (Map.Entry<String, Response<Boolean>> entry : keysResp.entrySet()) {
+                    String string = entry.getKey();
+                    Response<Boolean> response = entry.getValue();
+                    if(response.get())
+                        keyExits.add(string);
+                }
+                
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.pipelineGetExits", ex);
+                keyExits = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return keyExits;
+       }
+       
+        
        public int isExits(List<String> keys)
        {
            int countCheck = 0;
@@ -1003,6 +1092,26 @@ public class RedisClient {
            return ret;
        }
        
+       
+        public Set<String> keys(String key)
+       {
+           Set<String> ret = new HashSet<>();
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.keys(key);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+       }
        
 //       public Map<String,Object> pipeline(Map<>)
 //     {
