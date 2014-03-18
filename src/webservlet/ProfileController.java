@@ -6,12 +6,14 @@
 
 package webservlet;
 
+import Model.Request.ClientRequest;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
+import webservlet.Action.ProfileAction;
 
 /**
  *
@@ -38,6 +40,9 @@ public class ProfileController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-        ProfileAction.getInstance().handle(req, resp);
+         ClientRequest request = new ClientRequest(req);
+        
+        ProfileAction action = new ProfileAction();
+        action.handle(request, resp);
     }
 }

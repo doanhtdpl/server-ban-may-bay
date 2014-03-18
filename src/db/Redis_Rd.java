@@ -234,4 +234,13 @@ public class Redis_Rd {
  
             return data;
        }
+       
+       public Set<String> searchHead(String key)
+       {
+           Set<String>  data = new HashSet<String>();
+        
+            data = _jedis.keys(key+"*");
+
+            return data;
+       }
 }

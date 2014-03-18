@@ -6,6 +6,10 @@
 
 package db;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import libCore.Config;
 
 /**
@@ -32,5 +36,23 @@ public class Redis_Pipeline {
     private static class Redis_PipelineHolder {
 
         private static final Redis_Pipeline INSTANCE = new Redis_Pipeline();
+    }
+    
+    public List<String> getExitsScore(List<String> keys,String appId,String meId, String fbId)
+    {
+        List<String> ret = new ArrayList<String>();
+        
+        ret = _jedis.getExits(keys,appId,meId,fbId);
+        
+        return ret;
+    }
+    
+    public Map<String,Boolean> checkExits(List<String> keys)
+    {
+        Map<String,Boolean> ret = new HashMap<String,Boolean>();
+        
+        ret = _jedis.checkExits(keys);
+        
+        return ret;
     }
 }
