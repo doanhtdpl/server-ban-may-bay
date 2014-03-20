@@ -31,6 +31,12 @@ public class KeysDefinition {
     static  String USERME = "UserMEs";
     static  String USERFB = "UserFBs";
     static  String USERSCORES = "UserScores";
+    static  String APPKEYS = "KeyApps";
+    
+    public static String getAppKey()
+    {
+        return APPKEYS;
+    }
     
     public static byte[] ramdomKey()
     {

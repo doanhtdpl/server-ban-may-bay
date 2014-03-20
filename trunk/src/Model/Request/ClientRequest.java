@@ -6,6 +6,7 @@
 
 package Model.Request;
 
+import Security.Scr_Base64;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,53 +44,56 @@ public class ClientRequest {
             _meID = "";
             _fbID = "";
             
-           Map<String,String> ids = new HashMap<String,String>();
-           ids = Util.getUserId(_data);
-           _fbID = ids.get(ShareMacros.FACEID);
-           _meID = ids.get(ShareMacros.MEID);
-           _uid = ids.get(ShareMacros.ID);
-           
             List<String> attributeNames = new ArrayList<String>();
             attributeNames= (ArrayList)req.getAttributeNames();            
             for (String att : attributeNames) 
             {
                 _attribute.put(att, req.getAttribute(att));
             }
-            
-           Map<String,String[]> parameter = new HashMap<String,String[]>();
-           parameter = req.getParameterMap();           
-             if(parameter.containsKey(ShareMacros.DATA))
+		
+            Map<String,String> dataReq = new HashMap<String,String>();
+            dataReq = parseDataJsonReq(req);            
+           
+             if(dataReq.containsKey(ShareMacros.DATA))
              {
-                 _data = parseDataJsonReq(parameter.get(ShareMacros.DATA)[0]);
+                 _data = Util.string2Map(dataReq.get(ShareMacros.DATA));//parseDataJsonReq(parameter.get(ShareMacros.DATA)[0]);
              }
              
-             if(parameter.containsKey(ShareMacros.METHOD))
+             if(dataReq.containsKey(ShareMacros.METHOD))
              {
-                 _method = parameter.get(ShareMacros.METHOD)[0];
+                 _method = dataReq.get(ShareMacros.METHOD);
              }
             
-             if(parameter.containsKey(ShareMacros.SIGN))
+             if(dataReq.containsKey(ShareMacros.SIGN))
              {
-                 _sign = parameter.get(ShareMacros.SIGN)[0];
+                 _sign = dataReq.get(ShareMacros.SIGN);
              }
              
-             if(parameter.containsKey(ShareMacros.APPID))
+             if(dataReq.containsKey(ShareMacros.APPID))
              {
-                 _appId = parameter.get(ShareMacros.APPID)[0];
+                 _appId = dataReq.get(ShareMacros.APPID);
              }
-            
+             
         }
         
-        public Map<String,String> parseDataJsonReq(String string)
+        public Map<String,String> parseDataJsonReq(HttpServletRequest req)
         {
+             String data2Json = "";
              Map<String,String> reqData = new HashMap<String,String>();
 
-            String data2Json = string;
+             Map<String,String[]> parameter = new HashMap<String,String[]>();
+                parameter = req.getParameterMap();
+                 
+            for (Map.Entry<String, String[]> entry : parameter.entrySet()) {
+                String string = entry.getKey();
+                String[] strings = entry.getValue();
 
-           Gson g = new Gson();
-            JSONObject j = g.fromJson(data2Json, JSONObject.class);
+                data2Json = string;
+            }
+        
+            data2Json = Scr_Base64.Decode(data2Json);           
 
-            reqData = (HashMap<String,String>) j;
+            reqData = Util.string2Map(data2Json);
 
             return reqData;
         }

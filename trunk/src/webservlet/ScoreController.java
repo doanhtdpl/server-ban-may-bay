@@ -7,6 +7,7 @@
 package webservlet;
 
 import Model.Request.ClientRequest;
+import Security.Authenticate;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,10 @@ public class ScoreController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-        ClientRequest request = new ClientRequest(req);
+         ClientRequest request = new ClientRequest(req);
+        Authenticate auth = new Authenticate(request._appId,request._sign,request._fbID,request._meID);
+        
+       
         
         
         ScoreAction action = new ScoreAction();

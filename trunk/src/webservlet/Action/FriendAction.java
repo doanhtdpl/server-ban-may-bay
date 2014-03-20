@@ -65,7 +65,7 @@ public class FriendAction {
         try {
             prepareHeader(resp);
             
-            if(request._method.matches("get"))
+            if(request._method.equals("get"))
                 getFriendList3(request, resp);
             else
                 setFriendList(request, resp);

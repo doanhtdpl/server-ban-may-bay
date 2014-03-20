@@ -114,7 +114,7 @@ public class ProfileAction {
         try {
             prepareHeader(resp);
             
-            if(request._method.matches("get"))
+            if(request._method.equals("get"))
                 getInfo(request, resp);
             else
                 updateInfo(request, resp);

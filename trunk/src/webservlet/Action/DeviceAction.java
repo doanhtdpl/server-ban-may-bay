@@ -112,7 +112,7 @@ public class DeviceAction {
         try {
             prepareHeader(resp);
             
-            if(request._method.matches("get"))
+            if(request._method.equals("get"))
                getDevice(request, resp); 
             else
                 addDevice(request, resp);

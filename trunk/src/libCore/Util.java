@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.simple.JSONObject;
 import share.KeysDefinition;
 import share.ShareMacros;
 
@@ -48,11 +49,23 @@ public class Util {
     
    public static String obj2String(Object obj)
    {
-       Gson j = new Gson();
+        Gson j = new Gson();
        
        String strData = j.toJson(obj);
        
        return strData;
+   }
+   
+   public static Map<String , String> string2Map(String str)
+   {
+       Map<String, String> data = new HashMap<String, String>();
+       
+        Gson g = new Gson();
+        JSONObject j = g.fromJson(str, JSONObject.class);
+
+        data = (HashMap<String,String>) j;
+
+        return data;
    }
     
    public static Map<String,String> getUserId(Map<String,String> data)

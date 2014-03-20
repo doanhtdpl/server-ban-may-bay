@@ -196,7 +196,7 @@ public class ScoreAction {
             }            
             else
             {
-                if(req._method.matches(ShareMacros.METHOD_GET))
+                if(req._method.equals(ShareMacros.METHOD_GET))
                     getScore(req, resp);
                 else
                     updateScore(req, resp);
