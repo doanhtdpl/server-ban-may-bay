@@ -25,6 +25,7 @@ import share.ShareMacros;
 import utilities.time.UtilTime;
 import libCore.Util;
 import Model.Request.ClientRequest;
+import Security.Scr_Base64;
 /**
  *
  * @author LinhTA
@@ -73,6 +74,15 @@ public class ScoreAction {
             else
                 check = "false";
         
+             try{
+            
+            String name = Redis_Rd.getInstance().Hget( uid,ShareMacros.NAME);
+            Controller.CoreController.pushNotificationScore(uid, meID, faceID,name,newScore,oldScore, appId);
+            }
+            catch(IOException e)
+            {
+
+            }
         }
         
        
@@ -81,15 +91,7 @@ public class ScoreAction {
        mapjson.put(ShareMacros.SCORE, score);
         out(mapjson.toJSONString(), resp);
         
-        try{
-            
-            String name = Redis_Rd.getInstance().Hget( uid,ShareMacros.NAME);
-            Controller.CoreController.pushNotificationScore(uid, meID, faceID,name,Long.valueOf( mapjson.get(ShareMacros.SCORE).toString()), appId);
-        }
-        catch(IOException e)
-        {
-            
-        }
+       
     }
     
     public void getScore( ClientRequest req, HttpServletResponse resp )
@@ -159,7 +161,7 @@ public class ScoreAction {
         PrintWriter out = null;
         try {
             out = respon.getWriter();
-            out.print(content);
+            out.print(Scr_Base64.Encode(content));
             out.close();
         } catch (Exception ex) {
             //logger_.error("CampainAction.out:" + ex.getMessage(), ex);

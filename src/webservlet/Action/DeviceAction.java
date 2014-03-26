@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 import share.KeysDefinition;
 import share.ShareMacros;
+import Security.Scr_Base64;
 import libCore.Util;
 
 /**
@@ -91,7 +92,7 @@ public class DeviceAction {
         PrintWriter out = null;
         try {
             out = respon.getWriter();
-            out.print(content);
+            out.print(Scr_Base64.Encode(content));
             out.close();
         } catch (Exception ex) {
             //logger_.error("CampainAction.out:" + ex.getMessage(), ex);

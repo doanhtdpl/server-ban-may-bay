@@ -28,6 +28,7 @@ import share.ShareMacros;
 import  libCore.Util;
 import Model.ModelFriend;
 import Model.Request.ClientRequest;
+import Security.Scr_Base64;
 /**
  *
  * @author LinhTA
@@ -44,7 +45,7 @@ public class FriendAction {
         PrintWriter out = null;
         try {
             out = respon.getWriter();
-            out.print(content);
+            out.print(Scr_Base64.Encode(content));
             out.close();
         } catch (Exception ex) {
             //logger_.error("CampainAction.out:" + ex.getMessage(), ex);

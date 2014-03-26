@@ -33,7 +33,7 @@ public class ModelScore {
         _score = score;
     }
     
-    public List<String> getFriends4Push(String appID)
+    public List<String> getFriends4Push(String appID,long oldScore)
     {
         List<String> isFriend4Push =  new ArrayList<String>();
          ModelFriend friendMd = new ModelFriend(_id, _meID, _fbID);
@@ -63,7 +63,7 @@ public class ModelScore {
             Map<String, Object> object = new HashMap<String,Object>();
             object = libCore.Util.obj2Map(it.next());
             long scoreF = Long.valueOf(object.get(ShareMacros.SCORE).toString());
-            if(_score > scoreF)
+            if(_score > scoreF && scoreF > oldScore)
             {
                 String k = object.get(ShareMacros.ID).toString();
                 if(_meID != "" && !_fbID.isEmpty())

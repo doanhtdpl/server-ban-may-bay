@@ -9,6 +9,7 @@ package Model.Request;
 import Security.Scr_Base64;
 import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import share.ShareMacros;
 import libCore.Util;
+import org.eclipse.jetty.util.ajax.JSON;
+import org.json.simple.parser.JSONParser;
 
 /**
  *
  * @author LinhTA
  */
 public class ClientRequest {
-    public Map<String,Object> _attribute; //atributes
+    public Map<String,String> _attribute; //atributes
         public Map<String,String> _data; //String json -> base 64
         public String _sign; //MD5(appId + keyOfApp + jsonData)
         public String _method; //method : set or get
@@ -34,7 +37,7 @@ public class ClientRequest {
     
         public ClientRequest(HttpServletRequest req)
         {
-            _attribute = new HashMap<String,Object>(); 
+            _attribute = new HashMap<String,String>(); 
             _data = new HashMap<String,String>(); 
             _sign = ""; 
             _method = "";
@@ -44,35 +47,52 @@ public class ClientRequest {
             _meID = "";
             _fbID = "";
             
-            List<String> attributeNames = new ArrayList<String>();
-            attributeNames= (ArrayList)req.getAttributeNames();            
-            for (String att : attributeNames) 
-            {
-                _attribute.put(att, req.getAttribute(att));
-            }
 		
             Map<String,String> dataReq = new HashMap<String,String>();
             dataReq = parseDataJsonReq(req);            
-           
-             if(dataReq.containsKey(ShareMacros.DATA))
-             {
-                 _data = Util.string2Map(dataReq.get(ShareMacros.DATA));//parseDataJsonReq(parameter.get(ShareMacros.DATA)[0]);
-             }
-             
-             if(dataReq.containsKey(ShareMacros.METHOD))
-             {
-                 _method = dataReq.get(ShareMacros.METHOD);
-             }
             
-             if(dataReq.containsKey(ShareMacros.SIGN))
+            for (Map.Entry<String, String> entry : dataReq.entrySet()) {
+                String k = entry.getKey();
+                
+                
+            if(k.equals(ShareMacros.DATA))
              {
-                 _sign = dataReq.get(ShareMacros.SIGN);
+                 String val=  JSON.toString(entry.getValue());              
+                 
+                 _data = Util.string2Map(val);//Util.string2Map(val);//parseDataJsonReq(parameter.get(ShareMacros.DATA)[0]);
+                 
+                 Map<String,String> ids = new HashMap<String,String>();
+                 ids = Util.getUserId(_data);
+                 _uid = ids.get(ShareMacros.ID);
+                 _fbID = ids.get(ShareMacros.FACEID);
+                 _meID = ids.get(ShareMacros.MEID);
+                 
              }
+             else
+             if(k.equals(ShareMacros.METHOD))
+             {
+                 String val = entry.getValue();
+                 _method =val;
+             }
+            else
+             if(k.equals(ShareMacros.SIGN))
+             {
+                 String val = entry.getValue();
+                 _sign = val;
+             }
+             else
+             if(k.equals(ShareMacros.APPID))
+             {
+                 String val = entry.getValue();
+                 _appId = val;
+             }
+             else
+             {
+                 String val = entry.getValue();
+                 _attribute.put(k, val);
+             }
+            }
              
-             if(dataReq.containsKey(ShareMacros.APPID))
-             {
-                 _appId = dataReq.get(ShareMacros.APPID);
-             }
              
         }
         
@@ -88,7 +108,7 @@ public class ClientRequest {
                 String string = entry.getKey();
                 String[] strings = entry.getValue();
 
-                data2Json = string;
+                data2Json = strings[0];
             }
         
             data2Json = Scr_Base64.Decode(data2Json);           

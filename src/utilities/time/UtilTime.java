@@ -25,6 +25,15 @@ public class UtilTime {
         return timenow;
     }
     
+    public static String getTimeNowStr()
+    {
+        String timenow = "";
+        
+        timenow = Calendar.getInstance(TimeZone.getDefault()).getTime().toLocaleString();
+        
+        return timenow;
+    }
+    
     public static int getDaysDiff(long before, long after)
     {
         int days = 0;
@@ -65,8 +74,8 @@ public class UtilTime {
             
     
     public static void main(String[] args) {
-        System.out.print( getDaysDiff(getTimeNow(),  getTimeNow()+86000000*12 ));
-       
+        //System.out.print( getDaysDiff(getTimeNow(),  getTimeNow()+86000000*12 ));
+       System.out.print( getTimeNowStr());
         
     }
 }

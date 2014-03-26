@@ -26,8 +26,8 @@ public class Authenticate {
         _sign = sign;
         String keyApp = getKeyApp(appID);
         
-        _keyAuth = appID+keyApp+fbId+meId;
-        _keyAuth =Scr_MD5.parseMD5(_keyAuth);        
+        String keyStr = appID+keyApp+fbId+meId;
+        _keyAuth =Scr_MD5.parseMD5(keyStr);        
       
     }
     

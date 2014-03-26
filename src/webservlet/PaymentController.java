@@ -6,23 +6,27 @@
 
 package webservlet;
 
-import Model.Request.ClientRequest;
-import Security.Authenticate;
+import Model.Request.PaymentRequest;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
-import webservlet.Action.DeviceAction;
-
+import webservlet.Action.FriendAction;
+import utilities.time.UtilTime;
 /**
  *
  * @author LinhTA
  */
-public class DeviceController extends ServerServlet{
-    private static final Logger log = Logger.getLogger(ScoreController.class);
+public class PaymentController extends ServerServlet
+{
+     private static final Logger log = Logger.getLogger(ScoreController.class);
+     private static String ErrorSign = "1|Invalid signature";
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,20 +46,21 @@ public class DeviceController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
-         ClientRequest request = new ClientRequest(req);         
-        Authenticate auth = new Authenticate(request._appId,request._sign,request._fbID,request._meID);
-      
-        if(auth.checkAuth())
+        try
+        { 
+            PaymentRequest request = new PaymentRequest(req);
+            if(request.checkSign())
+            {
+                FileWriter fw = null;
+                fw = new FileWriter("data.csv", true);
+                fw.write(UtilTime.getTimeNowStr() + "-MO:" + request._moid+","+request._serviceNum+","+request._phone+","+request._syntax+","+request._mesageRequest+" \n");
+                fw.close();
+                
+            }
+            else 
+                echo(ErrorSign, resp);
+        }catch(Exception e)
         {
-           DeviceAction action = new DeviceAction();  
-            action.handle(request, resp);
         }
-        else
-        {
-            JSONObject mapJson = new JSONObject();
-            mapJson.put(share.ShareMacros.SUSSCES, "false");
-            echo(mapJson.toString(), resp);
-        }
-        
     }
 }

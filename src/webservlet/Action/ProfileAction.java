@@ -7,6 +7,7 @@
 package webservlet.Action;
 
 import Model.Request.ClientRequest;
+import Security.Scr_Base64;
 import com.google.gson.Gson;
 import db.Redis_Rd;
 import db.Redis_W;
@@ -93,7 +94,7 @@ public class ProfileAction {
         PrintWriter out = null;
         try {
             out = respon.getWriter();
-            out.print(content);
+            out.print(Scr_Base64.Encode(content));
             out.close();
         } catch (Exception ex) {
             //logger_.error("CampainAction.out:" + ex.getMessage(), ex);
