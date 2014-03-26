@@ -7,12 +7,14 @@
 package webservlet;
 
 import Model.Request.ClientRequest;
+import Security.Authenticate;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import webservlet.Action.ProfileAction;
 
 /**
@@ -41,8 +43,19 @@ public class ProfileController extends ServerServlet{
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
          ClientRequest request = new ClientRequest(req);
+        Authenticate auth = new Authenticate(request._appId,request._sign,request._fbID,request._meID);
+      
+        if(auth.checkAuth())
+        {
+            ProfileAction action = new ProfileAction();
+            action.handle(request, resp);
+        }
+        else
+        {
+            JSONObject mapJson = new JSONObject();
+            mapJson.put(share.ShareMacros.SUSSCES, "false");
+            echo(mapJson.toString(), resp);
+        }
         
-        ProfileAction action = new ProfileAction();
-        action.handle(request, resp);
     }
 }

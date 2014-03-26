@@ -8,12 +8,16 @@ package webservlet;
 
 import Model.Request.ClientRequest;
 import Security.Authenticate;
+import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import webservlet.Action.ScoreAction;
 
 /**
@@ -31,7 +35,7 @@ public class ScoreController extends ServerServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
+      
         try {
 			doProcess(req, resp);
 		} catch (Exception ex) {
@@ -44,12 +48,19 @@ public class ScoreController extends ServerServlet{
         
          ClientRequest request = new ClientRequest(req);
         Authenticate auth = new Authenticate(request._appId,request._sign,request._fbID,request._meID);
+      
+        if(auth.checkAuth())
+        {
+            ScoreAction action = new ScoreAction();
+            action.handle(request, resp); 
+        }
+        else
+        {
+            JSONObject mapJson = new JSONObject();
+            mapJson.put(share.ShareMacros.SUSSCES, "false");
+            echo(mapJson.toString(), resp);
+        }
         
-       
-        
-        
-        ScoreAction action = new ScoreAction();
-        action.handle(request, resp);
     }
     
     

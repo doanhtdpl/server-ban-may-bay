@@ -7,12 +7,14 @@
 package webservlet;
 
 import Model.Request.ClientRequest;
+import Security.Authenticate;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import webservlet.Action.FriendAction;
 
 /**
@@ -41,9 +43,20 @@ public class FriendController extends ServerServlet{
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
          ClientRequest request = new ClientRequest(req);
-        
-       FriendAction action = new FriendAction(); 
-       action.handle(request, resp);
+        Authenticate auth = new Authenticate(request._appId,request._sign,request._fbID,request._meID);
+      
+        if(auth.checkAuth())
+        {
+            FriendAction action = new FriendAction(); 
+            action.handle(request, resp);
+        }
+        else
+        {
+            JSONObject mapJson = new JSONObject();
+            mapJson.put(share.ShareMacros.SUSSCES, "false");
+            echo(mapJson.toString(), resp);
+        }
+       
     }
     
     
