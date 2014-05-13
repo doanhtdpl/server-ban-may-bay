@@ -59,6 +59,25 @@ public class Redis_Rd {
         return data;
     }
     
+    public String ping()
+    {
+        String data = null;
+        
+        data = _jedis.ping();
+        
+        return data;
+        
+    }
+    
+    public Set<String> keys(String txtSearch)
+    {
+         Set<String> data = null;
+        
+        data = _jedis.keys(txtSearch);
+        
+        return data;
+    }
+    
     public Map<String,String> ranb()
     {
         Map<String,String> data = new HashMap<String, String>();
@@ -242,5 +261,43 @@ public class Redis_Rd {
             data = _jedis.keys(key+"*");
 
             return data;
+       }
+       
+       public String getRetries(String key)
+       {
+           String ret = null;
+           
+           int retries = Integer.parseInt(Config.getParam("redis", "retries"));
+         while(retries>0)
+         {
+             ret = get(key);
+             if(ret.isEmpty() || ret == null)
+             {
+                 ret = null;
+                 retries --;
+             }
+             else break;
+         }
+           
+           return ret;
+       }
+       
+      public String hgetRetries(String key,String field)
+       {
+           String ret = null;
+           
+           int retries = Integer.parseInt(Config.getParam("redis", "retries"));
+         while(retries>0)
+         {
+             ret = Hget(key,field);
+             if(ret.isEmpty() || ret == null)
+             {
+                 ret = null;
+                 retries --;
+             }
+             else break;
+         }
+           
+           return ret;
        }
 }

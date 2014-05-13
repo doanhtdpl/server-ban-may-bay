@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import db.Redis_Rd;
+import libCore.Config;
 import share.KeysDefinition;
 /**
  *
@@ -23,6 +24,7 @@ public class Authenticate {
     
     public Authenticate(String appID,String sign,String fbId,String meId)
     {
+        
         _sign = sign;
         String keyApp = getKeyApp(appID);
         
@@ -44,7 +46,7 @@ public class Authenticate {
     {
         if(_sign.equals(_keyAuth))
             return true;
-        
+        Test_LogCSV.LogCSV.log("AUTH Fail",_sign +","+_keyAuth);
         return false;
     }
     

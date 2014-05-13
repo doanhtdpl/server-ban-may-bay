@@ -27,7 +27,7 @@ public class test {
             SOAPConnection soapConnection = soapConnectionFactory.createConnection();
 
             // Send SOAP Message to SOAP Server
-            String url = "http://127.0.0.1:8025/naptien";
+            String url = "http://dbp.cgkstudio.com:8025/naptien";
             SOAPMessage soapResponse = soapConnection.call(createSOAPRequest(), url);
 
             // Process the SOAP Response

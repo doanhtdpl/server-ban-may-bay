@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import share.KeysDefinition;
 import share.ShareMacros;
@@ -47,6 +48,29 @@ public class Util {
         return data;
     }
     
+     public static String quote(String s) {
+        return "'" + s + "'";
+    }
+      public static String removePrefix(String userId) {
+        
+        int prefixLenght;
+        
+        if (userId.startsWith(ShareMacros.PREFIX_FB)) {
+            
+            prefixLenght = ShareMacros.PREFIX_FB.length();
+            
+        } else {
+            
+            prefixLenght = ShareMacros.PREFIX_ME.length();
+            
+        }
+        
+        String newStr = userId.substring(prefixLenght);
+        
+        return newStr;
+        
+    }
+    
    public static String obj2String(Object obj)
    {
         Gson j = new Gson();
@@ -61,6 +85,7 @@ public class Util {
        Map<String, String> data = new HashMap<String, String>();
        
         Gson g = new Gson();
+        System.out.println("STR: " + str);
         JSONObject j = g.fromJson(str, JSONObject.class);
 
         data = (HashMap<String,String>) j;
@@ -110,4 +135,31 @@ public class Util {
        
        return ret;
    }
+   
+       public static String getClientIP(HttpServletRequest request) {
+        String clientIp = request.getHeader("X-FORWARDED-FOR");
+        if (clientIp == null || clientIp.length() == 0) {
+            clientIp = request.getHeader("X-Forwarded-For");
+        }
+        if (clientIp == null || clientIp.length() == 0) {
+            clientIp = request.getHeader("x-forwarded-for");
+        }
+        if (clientIp == null || clientIp.length() == 0) {
+            clientIp = request.getRemoteAddr();
+        }
+        return clientIp;
+    }
+       
+        public static String arrayToString( String... strs )
+    {
+        String result    =   "";
+        for( int i = 0; i < strs.length; ++i ) {
+            if( i == strs.length - 1 ) {
+                result   +=  strs[i];
+            } else { 
+                result   +=  strs[i] + ",";
+            }
+        }
+        return result;
+    }
 }

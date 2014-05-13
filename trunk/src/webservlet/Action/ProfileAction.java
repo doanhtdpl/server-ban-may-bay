@@ -6,6 +6,7 @@
 
 package webservlet.Action;
 
+import Model.ModelItem;
 import Model.Request.ClientRequest;
 import Security.Scr_Base64;
 import com.google.gson.Gson;
@@ -30,6 +31,8 @@ public class ProfileAction {
     }
     
     
+    
+    
     public void updateInfo( ClientRequest req, HttpServletResponse resp )
     {
        
@@ -40,17 +43,18 @@ public class ProfileAction {
         
         String name = req._data.get(ShareMacros.NAME);
         String email = req._data.get(ShareMacros.EMAIL);
-        
-        
-       
+                       
         Map<String,String> data = new HashMap<>();
         data.put(ShareMacros.NAME, name);
         data.put(ShareMacros.EMAIL, email);
         
+        if(uid != "")
+            setDefault(uid);
+        
         String check = "false";
         if(meID != null && !meID.isEmpty() )
         {
-            if (Redis_W.getInstance().hset(uid, data) != "-1" && Redis_W.getInstance().sadd(KeysDefinition.getAllUserME(appId),meID) != -1)
+            if (Redis_W.getInstance().hset(uid, data) != "-1" && Redis_W.getInstance().sadd(KeysDefinition.getAllUserME(appId),meID) != -1 )
                 check = "true";
             else
                 check = "false";
@@ -58,11 +62,12 @@ public class ProfileAction {
         else
             if(faceID != null && !faceID.isEmpty() )
             {
-                if (Redis_W.getInstance().hset(uid, data) != "-1" && Redis_W.getInstance().sadd(KeysDefinition.getAllUserFB(appId),faceID) != -1)
+                if (Redis_W.getInstance().hset(uid, data) != "-1" && Redis_W.getInstance().sadd(KeysDefinition.getAllUserFB(appId),faceID) != -1 && Redis_W.getInstance().set(email,uid )!= -1)
                     check = "true";
                 else
                     check = "false";
             }
+        
         JSONObject mapjson = new JSONObject();
        mapjson.put(ShareMacros.SUSSCES, check);
        out(mapjson.toJSONString(), resp);
@@ -83,9 +88,18 @@ public class ProfileAction {
        data =  Redis_Rd.getInstance().hget(uid);
        data.put(ShareMacros.FACEID, faceId);
        data.put(ShareMacros.MEID,meId);
+       
+//       String keyCoin = KeysDefinition.getKeyCoinUser(uid);
+//       String coin = Redis_Rd.getInstance().get(keyCoin);
+//       if(coin == null || coin.isEmpty() || coin =="")
+//       {
+//           coin = "0";
+//       }
+       data.put(ShareMacros.Coin, ModelItem.getCountItem(uid, ShareMacros.Coin));
+       
        JSONObject mapjson = new JSONObject();
        mapjson.putAll(data);
-       
+     
         out(mapjson.toJSONString(), resp);
     }
     
@@ -117,7 +131,7 @@ public class ProfileAction {
             
             if(request._method.equals("get"))
                 getInfo(request, resp);
-            else
+            else if(request._method.equals("set"))
                 updateInfo(request, resp);
             
         } catch (Exception ex) {
@@ -125,6 +139,57 @@ public class ProfileAction {
         }
     }
      
+    
+     
+     public void setDefault(String uid)
+     {
+//         String keyCoin = KeysDefinition.getKeyCoinUser(uid);
+//         String coin = "";
+//         int retries = configuration.Configuration.retries;
+//         while(retries>0)
+//         {
+//             coin = Redis_Rd.getInstance().get(keyCoin);
+//             if(coin.isEmpty() || coin == null)
+//                 retries --;
+//             else break;
+//         }
+//               
+//         if(coin.isEmpty() || coin == null)
+//         {
+//             retries = configuration.Configuration.retries;
+//              while(retries>0)
+//            {
+//                long ret = Redis_W.getInstance().set(keyCoin,configuration.Configuration.Coin_UserDefault);
+//                if(ret == -1)
+//                    retries --;
+//                else break;
+//            }
+//         }
+//        
+     }
+     
+    
+     public void outFalse(HttpServletResponse resp)
+     {
+         JSONObject mapjson = new JSONObject();
+       mapjson = defaultResponse_False();
+       
+        out(mapjson.toJSONString(), resp);
+     }
+     
+      private JSONObject defaultResponse_False()
+    {
+        JSONObject data = new JSONObject();
+        data.put(share.ShareMacros.SUSSCES, "false");
+         data.put(ShareMacros.Coin, "0");
+         data.put(ShareMacros.NAME, "");
+          data.put(ShareMacros.EMAIL, "");
+        data.put(ShareMacros.FACEID, "");
+       data.put(ShareMacros.MEID,"");
+ 
+       
+        return  data;
+    }
 //     public Map<String,String> getDataJsonReq(HttpServletRequest request)
 //     {
 //          Map<String,String> reqData = new HashMap<String,String>();

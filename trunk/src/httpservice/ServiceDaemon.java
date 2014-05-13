@@ -11,6 +11,7 @@ import libCore.LogUtil;
 import java.io.File;
 import java.util.TimeZone;
 import org.apache.log4j.Logger;
+import org.eclipse.jetty.io.EndPoint;
 
 /**
  *
@@ -22,8 +23,11 @@ public class ServiceDaemon {
     
     public static void main(String[] args) throws Exception {
        
+        
+        Test_LogCSV.LogCSV.log("versionServer**", "2.4");
+        
         LogUtil.init();
-        logger_.info("version 2.0 : Me-Fb + Topscore");
+        logger_.info("version 2.4 ");
         WebServer webserver = new WebServer();
         String pidFile = System.getProperty("pidfile");
         try {

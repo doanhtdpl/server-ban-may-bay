@@ -57,7 +57,7 @@ public class ModelScore {
        
         friendHaveScore = friendMd.getFriendHaveScore(friendApp, appId);
        List<Object> data = new ArrayList<Object>();
-       data = friendMd.getScoreFriends(friendHaveScore, appId); 
+       data = friendMd.getScoreFriends(friendHaveScore, appId,null); 
         
        for (Iterator<Object> it = data.iterator(); it.hasNext();) {
             Map<String, Object> object = new HashMap<String,Object>();

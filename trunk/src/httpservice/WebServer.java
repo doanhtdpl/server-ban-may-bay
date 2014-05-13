@@ -4,6 +4,8 @@
  */
 package httpservice;
 
+import javax.management.JMX;
+import javax.xml.ws.Endpoint;
 import libCore.Config;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.jmx.MBeanContainer;
@@ -22,9 +24,13 @@ public class WebServer {
 
     private static Logger logger_ = Logger.getLogger(WebServer.class);
 
+    
     public void start() throws Exception {
+           
+        
         Server server = new Server();
-
+        
+        
         //setup JMX
         MBeanContainer mbContainer = new MBeanContainer(java.lang.management.ManagementFactory.getPlatformMBeanServer());
         server.getContainer().addEventListener(mbContainer);
@@ -49,11 +55,18 @@ public class WebServer {
 
         server.setConnectors(new Connector[]{connector});
 
-
+        //server
+        
         ServletHandler handler = new ServletHandler();
         server.setHandler(handler);
         logger_.info(" ************************** ");
 
+        handler.addServletWithMapping("webservlet.SendItemController", "/gift/send_inbox");
+        handler.addServletWithMapping("webservlet.SendItemController", "/gift/send_inbox/*");
+        handler.addServletWithMapping("webservlet.GetInboxController", "/gift/get_inbox");
+        handler.addServletWithMapping("webservlet.GetInboxController", "/gift/get_inbox/*");
+        handler.addServletWithMapping("webservlet.RemoveItemController", "/gift/remove_inbox");
+        handler.addServletWithMapping("webservlet.RemoveItemController", "/gift/remove_inbox/*");
         handler.addServletWithMapping("webservlet.ScoreController", "/score");
         handler.addServletWithMapping("webservlet.ScoreController", "/score/*");
         handler.addServletWithMapping("webservlet.FriendController", "/friend");
@@ -62,10 +75,13 @@ public class WebServer {
         handler.addServletWithMapping("webservlet.DeviceController", "/device/*");
         handler.addServletWithMapping("webservlet.ProfileController", "/profile");
         handler.addServletWithMapping("webservlet.ProfileController", "/profile/*");
-       
-         handler.addServletWithMapping("webservlet.PaymentController", "/naptien/*");
-         handler.addServletWithMapping("webservlet.PaymentController", "/naptien/*");
+        handler.addServletWithMapping("webservlet.ItemController", "/item");
+        handler.addServletWithMapping("webservlet.ItemController", "/item/*");
+        
+     //    handler.addServletWithMapping("webservlet.PaymentController", "/naptien/*");
+       //  handler.addServletWithMapping("webservlet.PaymentController", "/naptien/*");
          
+        
 //        handler.addServletWithMapping("webservlet.BlogComController", "/");
 //        handler.addServletWithMapping("webservlet.BlogComController", "/*");
 //        handler.addServletWithMapping("webservlet.CategoryController", "/cate/");

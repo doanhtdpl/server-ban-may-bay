@@ -12,9 +12,11 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import libCore.Config;
 import libCore.LogUtil;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
+import share.ShareMacros;
 import webservlet.Action.DeviceAction;
 
 /**
@@ -42,6 +44,20 @@ public class DeviceController extends ServerServlet{
 
     private void doProcess(HttpServletRequest req, HttpServletResponse resp) {
         
+         if(pingRedis(resp))
+        {
+            
+        }
+        else
+        {
+            Test_LogCSV.LogCSV.log("Redis Connect Fail", Config.getParam("redis", "host"));
+            JSONObject mapJson = new JSONObject();
+             mapJson = defaultResponse_False();
+            echo(mapJson.toJSONString(), resp);
+            
+            return;
+        }
+        
          ClientRequest request = new ClientRequest(req);         
         Authenticate auth = new Authenticate(request._appId,request._sign,request._fbID,request._meID);
       
@@ -53,9 +69,22 @@ public class DeviceController extends ServerServlet{
         else
         {
             JSONObject mapJson = new JSONObject();
-            mapJson.put(share.ShareMacros.SUSSCES, "false");
-            echo(mapJson.toString(), resp);
+            mapJson = defaultResponse_False();
+            echo(mapJson.toJSONString(), resp);
         }
         
+    }
+    
+     private JSONObject defaultResponse_False()
+    {
+        JSONObject data = new JSONObject();
+      data.put(ShareMacros.DEVICEID, "");
+       data.put(ShareMacros.FACEID, "");
+       data.put(ShareMacros.MEID, "");
+        data.put(ShareMacros.TOKEN, "");
+        data.put(ShareMacros.CONFIG, "");
+        data.put(ShareMacros.PHONENUMBER, "");
+        
+        return  data;
     }
 }

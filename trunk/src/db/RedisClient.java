@@ -134,6 +134,24 @@ public class RedisClient {
         return ret;
     }
 
+    public String ping()
+    {
+        String ret = null;
+        Jedis jedis = null;
+        try {
+            jedis = Pool.getResource();
+            ret = jedis.ping();
+           
+        } catch (Exception ex) {
+            logger.error("Exception in RedisClient.get", ex);
+        } finally {
+            if (jedis != null) {
+                Pool.returnResource(jedis);
+            }
+        }
+        return ret;
+    }
+    
      public Map<String,String> rand()
      {
          Map<String,String> data = new HashMap<String,String>();
