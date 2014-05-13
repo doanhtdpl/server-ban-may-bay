@@ -36,7 +36,7 @@ public class PaymentRequest {
    public static String _syntax; 
    public static String _encryptedMessage; 
    public static String _sign; 
-   public static String _mesageRequest;
+   public static String _messageRequesst;
     
     static String MOID      = "MOId";
     static String TELCO     = "Telco";
@@ -48,18 +48,20 @@ public class PaymentRequest {
     
      public PaymentRequest(HttpServletRequest req) throws Exception
         {
+            
              Document doc = parseXML(req.getInputStream());
-             FileWriter fw = null;
-                fw = new FileWriter("data.csv", true);
-                fw.write(UtilTime.getTimeNowStr() + "-doc:" + doc.toString()+" \n");
-                fw.close();
+            
              NodeList nList = doc.getElementsByTagName("Receive");
  
+             Test_LogCSV.LogCSV.log(" length getElementsByTagName Receive",String.valueOf( nList.getLength()));
 	
             for (int temp = 0; temp < nList.getLength(); temp++) 
             {
                 Node nNode = nList.item(temp);
-
+                
+              Test_LogCSV.LogCSV.log(" node Content",nNode.getTextContent());
+                 Test_LogCSV.LogCSV.log(" node type",String.valueOf(nNode.getNodeType()==Node.ELEMENT_NODE));     
+                
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                         Element eElement = (Element) nNode;
@@ -71,6 +73,9 @@ public class PaymentRequest {
                         _syntax = eElement.getElementsByTagName(SYNTAX).item(0).getTextContent();
                         _telco = eElement.getElementsByTagName(TELCO).item(0).getTextContent();
                         _encryptedMessage = eElement.getElementsByTagName(ENCRYPTED_MESSAGE).item(0).getTextContent();
+                        
+                        Test_LogCSV.LogCSV.log("-MO:" + _moid,"sign:"+_sign+","+"telco:"+_telco+","+"serviceNum:"+_serviceNum+","+"phone:"+_phone+","+"syntax:"+_syntax+","+"mesage:"+_messageRequesst+","+"encryptedMessage:"+_encryptedMessage+" \n");
+            
                 }
             }
              
@@ -98,12 +103,12 @@ public class PaymentRequest {
 
      public boolean checkSign ()
      {
-         _mesageRequest = "";
-         _mesageRequest = Security.Scr_Base64.Decode(_encryptedMessage);
+         _messageRequesst = "";
+         _messageRequesst = Security.Scr_Base64.Decode(_encryptedMessage);
          
          String privateKey = Configuration.PaymentPrivateKey;
          
-         String signStr = _moid + _serviceNum + _phone + _mesageRequest.toLowerCase() + privateKey;
+         String signStr = _moid + _serviceNum + _phone + _messageRequesst.toLowerCase() + privateKey;
          
          String sign = Scr_Base64.Encode(Scr_Sha1.parseSha1(signStr));
          

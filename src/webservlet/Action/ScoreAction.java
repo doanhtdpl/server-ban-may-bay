@@ -38,7 +38,7 @@ public class ScoreAction {
    
      public void updateScore( ClientRequest req, HttpServletResponse resp )
     {
-        
+         Test_LogCSV.LogCSV.log("method","update score");
         String appId = req._appId;
         
         String meID = req._meID;//ids.get(ShareMacros.MEID);
@@ -56,10 +56,14 @@ public class ScoreAction {
         if(oldScoreStr != null)
             oldScore = Long.parseLong(oldScoreStr);
         Long newScore = Long.parseLong(score);
+        
+        Test_LogCSV.LogCSV.log("score","new :"+newScore.toString()+","+"oldScore:"+oldScoreStr);
+        
         if( oldScore >= newScore)
         {
             check = "false";
             mapjson.put(ShareMacros.SCORE, String.valueOf(oldScore));
+            Test_LogCSV.LogCSV.log("score","old>new");
         }
         else
         {
@@ -74,6 +78,7 @@ public class ScoreAction {
             else
                 check = "false";
         
+            Test_LogCSV.LogCSV.log("score","check:"+check+","+"score:"+score);
              try{
             
             String name = Redis_Rd.getInstance().Hget( uid,ShareMacros.NAME);

@@ -80,7 +80,7 @@ public class DeviceAction {
        data.put(ShareMacros.DEVICEID, deviceId);
        data.put(ShareMacros.FACEID, faceID);
        data.put(ShareMacros.MEID, meID);
-       data.put(ShareMacros.MEID, meID);
+       
        JSONObject mapjson = new JSONObject();
        mapjson.putAll(data);
        

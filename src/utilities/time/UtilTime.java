@@ -29,7 +29,7 @@ public class UtilTime {
     {
         String timenow = "";
         
-        timenow = Calendar.getInstance(TimeZone.getDefault()).getTime().toLocaleString();
+        timenow = Calendar.getInstance(TimeZone.getDefault()).getTime().toString();
         
         return timenow;
     }

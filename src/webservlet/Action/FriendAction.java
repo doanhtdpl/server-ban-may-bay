@@ -27,6 +27,7 @@ import share.KeysDefinition;
 import share.ShareMacros;
 import  libCore.Util;
 import Model.ModelFriend;
+import Model.ModelItem;
 import Model.Request.ClientRequest;
 import Security.Scr_Base64;
 /**
@@ -68,8 +69,10 @@ public class FriendAction {
             
             if(request._method.equals("get"))
                 getFriendList3(request, resp);
-            else
+            else if(request._method.equals("set"))
                 setFriendList(request, resp);
+            else if(request._method.equals("getGift"))
+                getGift(request, resp);
             
         } catch (Exception ex) {
            // logger_.error("CampainAction.handle:" + ex.getMessage() + ", Username:" + req.getAttribute("ownerName").toString(), ex);
@@ -147,6 +150,92 @@ public class FriendAction {
 //        out(mapjson.toJSONString(), resp);
 //     }
      
+     public void getGift(ClientRequest req , HttpServletResponse resp)
+     {
+         Map<String,String> data = new HashMap<String,String>();
+         
+         String timeRevive = libCore.Config.getParam(ShareMacros.COUNTDOWN, ShareMacros.GIFT);
+         long time = Long.parseLong(timeRevive);
+         
+         String fid = "";
+         if(req._data.containsKey(ShareMacros.FRIENDID))
+             fid = req._data.get(ShareMacros.FRIENDID);
+         else
+         {
+             outFalse(resp);
+             return;
+         }
+         
+         ModelFriend modelF = new ModelFriend(req._uid, req._meID, req._fbID);
+         long oldTime = modelF.getTimeGift(req._uid,fid);
+         
+         int max =Integer.valueOf( libCore.Config.getParam(ShareMacros.MAX, ShareMacros.LAZE));
+         String countStr = getCountItem(req._uid, ShareMacros.LAZE, resp);
+         int count = 0;
+         if(countStr != null)
+             count = Integer.parseInt(countStr);
+         if(count >= max )
+         {
+              data.put(ShareMacros.SUSSCES, "false");
+                 data.put(ShareMacros.TIMELAZE, String.valueOf(oldTime));
+                 data.put(ShareMacros.LAZE, String.valueOf(count));
+         }
+         else
+         {
+
+            long newTime = utilities.time.UtilTime.getTimeNow();
+
+            if((newTime - oldTime) >= time )
+            {
+                if(addLaze(req,fid,newTime))
+                {   
+                    data.put(ShareMacros.SUSSCES, "true");
+                   data.put(ShareMacros.TIMELAZE, String.valueOf(newTime));
+                }
+                else
+                {
+                    data.put(ShareMacros.SUSSCES, "false");
+                    data.put(ShareMacros.TIMELAZE, String.valueOf(oldTime));
+                }
+            }
+            else
+            {
+                data.put(ShareMacros.SUSSCES, "false");
+                data.put(ShareMacros.TIMELAZE, String.valueOf(oldTime));
+            }
+         }
+         
+            JSONObject mapjson = new JSONObject();
+       mapjson.putAll(data);
+       out(mapjson.toJSONString(), resp);
+     }
+     
+     public boolean addLaze(ClientRequest req,String fid,long time)
+     {
+         boolean ret = false;
+         String keyLaze = KeysDefinition.getKeyItem(req._uid, ShareMacros.LAZE);
+         String lazeStr = "";
+         lazeStr = Redis_Rd.getInstance().getRetries(keyLaze);
+         if(lazeStr ==null)
+             return false;
+         
+         int laze = 0;
+         laze = Integer.parseInt(lazeStr);
+         
+         laze = laze + 1;
+         
+         long ret2 = Redis_W.getInstance().setRetries(keyLaze, String.valueOf(laze));
+         long ret3 = Redis_W.getInstance().setRetries(KeysDefinition.getKeyFriendTime(req._uid, fid), String.valueOf(time));
+         
+         if(ret2 == -1 || ret3 == -1)
+         {
+             return false;
+         }
+         
+         
+         return true;
+     }
+     
      public void setFriendList(ClientRequest req , HttpServletResponse resp)
      {
         Gson gson = new Gson();
@@ -178,6 +267,57 @@ public class FriendAction {
        out(mapjson.toJSONString(), resp);
      }
      
+      public String getCountItem(String uid,String type,HttpServletResponse resp)
+      {
+            String key = KeysDefinition.getKeyItem(uid, type);
+             String ret = null;
+             try
+             {
+                 ret = Redis_Rd.getInstance().getRetries(key);
+             }
+             catch(Exception e)
+             {
+                 
+             }
+             if(ret == null)
+             {
+                 String count = "0";
+                 try
+                {
+                    count = libCore.Config.getParam(ShareMacros.DEFAULTUSER, type);
+                }
+                catch(Exception e)
+                {
+                    count = "0";
+                }
+                 
+                 long ret2 =-1;
+                try
+                {
+                    ret2= Redis_W.getInstance().setRetries(key, count);
+                }
+                catch(Exception e)
+                {
+                    
+                }
+                
+                if(ret2 == -1)
+                {
+                    outFalse(resp);
+                    return null;
+                }
+                else
+                {
+                    return count;
+                }
+
+            }
+             else
+             {
+                 return ret;
+             }
+      }
+      
 //     public void getFriendList2(HttpServletRequest req , HttpServletResponse resp)
 //     {
 //         Map<String, String> reqData = new HashMap<String,String>();
@@ -265,15 +405,34 @@ public class FriendAction {
        
          List<Object> data = new ArrayList<Object>();
         
-        data.addAll(_friendMdl.getScoreFriends(friendHaveScore, appId));
-        data.addAll(_friendMdl.getFakeScoreFriends(friendNotHaveScore));
+         Map<String,String> timeResendLife = new HashMap<String,String>();
+         timeResendLife = ModelItem.getTimeSendLife(uid, appId);
+         
+        data.addAll(_friendMdl.getScoreFriends(friendHaveScore, appId,timeResendLife));
+        data.addAll(_friendMdl.getFakeScoreFriends(friendNotHaveScore,timeResendLife));
         
        JSONObject mapjson = new JSONObject();
        mapjson.put(ShareMacros.FRIENDLIST,data);
-       
+       mapjson.put(ShareMacros.TIME,String.valueOf( utilities.time.UtilTime.getTimeNow()));
         out(mapjson.toJSONString(), resp);
      }
      
      
      
+      private JSONObject defaultResponse_False()
+    {
+        JSONObject data = new JSONObject();
+        List<Object> list = new ArrayList<Object>();
+        data.put(ShareMacros.FRIENDLIST,list);
+        data.put(ShareMacros.SUSSCES, "false");
+        data.put(ShareMacros.TIME,"0" );
+        return  data;
+    }
+      
+        private void outFalse(HttpServletResponse resp)
+       {
+           JSONObject mapjson = new JSONObject();
+            mapjson = defaultResponse_False();
+            out(mapjson.toJSONString(), resp);
+       }
 }

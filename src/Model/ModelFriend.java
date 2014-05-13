@@ -8,6 +8,7 @@ package Model;
 
 import db.Redis_Pipeline;
 import db.Redis_Rd;
+import db.Redis_W;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,7 +85,43 @@ public class ModelFriend {
          return friendHaveScore;
      }
      
-     public List<Object> getScoreFriends(List<String> friends,String appId)
+     //last time receive
+     public long getTimeGift(String uid, String fid)
+     {
+         
+         String keyTime = KeysDefinition.getKeyFriendTime(uid, fid);
+         String ret = null;
+             try
+             {
+                 ret = Redis_Rd.getInstance().getRetries(keyTime);
+             }
+             catch(Exception e)
+             {
+                 
+             }
+             if(ret == null)
+             {
+                long  ret2 = Redis_W.getInstance().setRetries(keyTime, "0");
+                long time2 = 0;
+                if(ret2 == -1)
+                {
+                    time2 = -1;
+                }
+                else
+                {
+                    time2 = 0;
+                }
+                return time2;
+            }
+             else
+             {
+                 return Long.parseLong(ret);
+             }
+         
+
+     }
+     
+     public List<Object> getScoreFriends(List<String> friends,String appId, Map<String , String> timeResendLife)
      {
          List<Object> data = new ArrayList<Object>();
          for(int j = 0; j < friends.size(); j++) 
@@ -100,6 +137,9 @@ public class ModelFriend {
             {
                 key = KeysDefinition.getKeyUserFB(friendId);
             }
+            
+            long time = getTimeGift(_id, friendId);
+            
             //key = KeysDefinition.getKeyAppUser(key, appId);
             String name = Redis_Rd.getInstance().Hget(key, ShareMacros.NAME);
             String score = Redis_Rd.getInstance().Hget(KeysDefinition.getKeyAppUser(key, appId), ShareMacros.SCORE);
@@ -109,6 +149,13 @@ public class ModelFriend {
                 friendProfile.put(ShareMacros.NAME, name);
                 friendProfile.put(ShareMacros.SCORE, score);
                 friendProfile.put(ShareMacros.ID, friendId);
+                friendProfile.put(ShareMacros.TIMELAZE, String.valueOf(time));
+                
+                String timeRL = "0";
+                if(timeResendLife.containsKey(key))
+                    timeRL = timeResendLife.get(key);
+                
+                friendProfile.put(ShareMacros.TIMESENDLIFE, timeRL);
                 
                 data.add( friendProfile);
             } 
@@ -118,7 +165,7 @@ public class ModelFriend {
          return data;
      }
      
-     public List<Object> getFakeScoreFriends(List<String> friends)
+     public List<Object> getFakeScoreFriends(List<String> friends,Map<String , String> timeResendLife)
      {
           List<Object> data = new ArrayList<Object>();
          for(int j = 0; j < friends.size(); j++) 
@@ -134,6 +181,8 @@ public class ModelFriend {
             {
                 key = KeysDefinition.getKeyUserFB(friendId);
             }
+            
+            long time = getTimeGift(_id, friendId);
             String name = Redis_Rd.getInstance().Hget(key, ShareMacros.NAME);
             String score = "0";
             if(score != null && name != null)
@@ -142,6 +191,13 @@ public class ModelFriend {
                 friendProfile.put(ShareMacros.NAME, name);
                 friendProfile.put(ShareMacros.SCORE, score);
                 friendProfile.put(ShareMacros.ID, friendId);
+                friendProfile.put(ShareMacros.TIMELAZE, String.valueOf(time));
+                String timeRL = "0";
+                if(timeResendLife.containsKey(key))
+                    timeRL = timeResendLife.get(key);
+                
+                friendProfile.put(ShareMacros.TIMESENDLIFE, timeRL);
+                
                 
                 data.add( friendProfile);
             } 

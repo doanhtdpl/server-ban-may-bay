@@ -33,6 +33,8 @@ public class KeysDefinition {
     static  String USERSCORES = "UserScores";
     static  String APPKEYS = "KeyApps";
     
+    static String Coin = "coin";
+    
     public static String getAppKey()
     {
         return APPKEYS;
@@ -82,6 +84,11 @@ public class KeysDefinition {
         public static String getKeyUserME(String uid)
         {
             return USER_ME +uid;
+        }
+       
+        public static String getKeyCoinUser(String uid)
+        {
+            return uid + "_"+Coin;
         }
         
         public static String getKeyUserME(int uid)
@@ -236,5 +243,23 @@ public class KeysDefinition {
          }
          
          return fIds;
+     }
+     
+     public static String getKeyItem(String uid,String typeItem)
+     {
+         String ret = "";
+         
+         ret = uid +"_"+ typeItem;         
+         
+         return  ret;
+     }
+     
+     public static String getKeyFriendTime(String uid,String fid)
+     {
+         String ret ="";
+         
+         ret = uid+"_"+fid;
+         
+         return ret;
      }
 }

@@ -78,7 +78,7 @@ public class ClientRequest {
              if(k.equals(ShareMacros.SIGN))
              {
                  String val = entry.getValue();
-                 _sign = val;
+                 _sign = val.toLowerCase();
              }
              else
              if(k.equals(ShareMacros.APPID))
@@ -93,7 +93,7 @@ public class ClientRequest {
              }
             }
              
-             
+             Test_LogCSV.LogCSV.log("clientRequest","appID:"+ _appId+","+"fbid:"+_fbID+","+"method:"+_method);
         }
         
         public Map<String,String> parseDataJsonReq(HttpServletRequest req)

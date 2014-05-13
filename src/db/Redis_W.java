@@ -6,6 +6,7 @@
 
 package db;
 
+import java.util.HashMap;
 import libCore.Config;
 import java.util.Map;
 import redis.clients.jedis.JedisPoolConfig;
@@ -155,4 +156,42 @@ public class Redis_W {
            
         System.out.print(Redis_W.getInstance().sadd("g", a));
     }
+       
+         public long setRetries(String key,String val)
+       {
+           long ret = -1;
+           
+            int retries = Integer.parseInt(Config.getParam("redis", "retries"));
+         while(retries>0)
+         {
+             ret = set(key,val);
+             if( ret == -1 )
+             {
+                 retries --;
+             }
+             else break;
+         }
+           
+           return ret;
+       }
+         
+          public String hsetRetries(String key,String field,String val)
+       {
+           String ret = null;
+           
+            int retries = Integer.parseInt(Config.getParam("redis", "retries"));
+            Map<String,String> data = new HashMap<String,String>();
+            data.put(field, val);
+         while(retries>0)
+         {
+             ret = hset(key,data);
+             if( ret == "-1" )
+             {
+                 retries --;
+             }
+             else break;
+         }
+           
+           return ret;
+       }
 }
