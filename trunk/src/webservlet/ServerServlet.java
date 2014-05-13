@@ -9,7 +9,7 @@ package webservlet;
  * @author LinhTA
  */
 import Security.Scr_Base64;
-import db.Redis_Rd;
+import DB_REDIS.Redis_Rd;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;

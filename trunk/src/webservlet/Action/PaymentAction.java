@@ -6,8 +6,8 @@
 
 package webservlet.Action;
 
-import db.Redis_Rd;
-import db.Redis_W;
+import DB_REDIS.Redis_Rd;
+import DB_REDIS.Redis_W;
 import share.KeysDefinition;
 import share.ShareMacros;
 
