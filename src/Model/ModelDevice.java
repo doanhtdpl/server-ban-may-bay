@@ -6,7 +6,7 @@
 
 package Model;
 
-import db.Redis_Rd;
+import DB_REDIS.Redis_Rd;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
