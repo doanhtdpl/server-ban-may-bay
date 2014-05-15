@@ -8,9 +8,9 @@ package webservlet.Action;
 
 import Model.Request.ClientRequest;
 import Security.Scr_Base64;
-import SqlDB.MySqlConnection_Rd;
-import SqlDB.Utils.DataRow;
-import SqlDB.Utils.DataTable;
+import DB_MYSQL.MySqlConnection_Rd;
+import DB_MYSQL.Utils.DataRow;
+import DB_MYSQL.Utils.DataTable;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
