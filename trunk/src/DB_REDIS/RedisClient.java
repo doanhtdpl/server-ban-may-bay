@@ -26,7 +26,7 @@ import share.KeysDefinition;
 
 /**
  *
- * @author tunm
+ * @author LinhTA
  */
 public class RedisClient {
 
@@ -74,14 +74,14 @@ public class RedisClient {
         poolConf.setMaxIdle(Integer.valueOf(Config.getParam("redis", "max_idle")));
         poolConf.setMaxWait(Integer.valueOf(Config.getParam("redis", "max_wait")));
         
-        this._host = host;
-        this._port = port;
-        if (password == null || password.isEmpty()) {
-//			Pool = new JedisPool(poolConf, this._host, this._port, this.timeout, password, database);
+        
+        if (password == null || password.isEmpty() || password =="") {
+		Pool = new JedisPool(poolConf, host, port,this._timeout,null, database);
         } else {
-//			Pool = new JedisPool(poolConf, host, port, this.timeout);
+			Pool = new JedisPool(poolConf, host, port, this._timeout, password, database);
         }
-        Pool = new JedisPool(poolConf, this._host, this._port);
+		
+       // Pool = new JedisPool(poolConf, this._host, this._port);
     }
 
     public RedisClient(String host, int port, int timeout, String password, int database) {
@@ -91,13 +91,8 @@ public class RedisClient {
         poolConf.setMaxIdle(Integer.valueOf(Config.getParam("redis", "max_idle")));
         poolConf.setMaxWait(Integer.valueOf(Config.getParam("redis", "max_wait")));
         
-        this._host = host;
-        this._port = port;
-        this._timeout = timeout;
-        this._password = password;
-        this._database = database;
-        Pool = new JedisPool(poolConf, this._host, this._port, this._timeout,
-                this._password, this._database);
+        Pool = new JedisPool(poolConf, host, port, timeout,
+                password, database);
     }
 
     public long set(String key, String value) {
