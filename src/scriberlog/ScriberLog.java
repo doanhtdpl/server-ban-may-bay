@@ -8,6 +8,7 @@ package scriberlog;
  *
  * @author LinhTA
  */
+import scriberlog.core.ScribeService;
 import libCore.LogUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +16,9 @@ import jcommon.transport.client.ClientFactory;
 import jcommon.transport.client.TClientInfo;
 import org.apache.log4j.Logger;
 import org.apache.thrift.protocol.TBinaryProtocol;
-import scriberlog.LogEntry;
-import scriberlog.ScribeService;
+import scriberlog.core.LogEntry;
 import configuration.Configuration;
+import scriberlog.core.LogEntry;
 
 public class ScriberLog implements LogInterface {
 
@@ -29,7 +30,10 @@ public class ScriberLog implements LogInterface {
     }
 
     public TClientInfo getClientInfo() {
-        TClientInfo aInfo = ClientFactory.getClient(Configuration.LOG_HOST, Configuration.LOG_PORT, ScribeService.Client.class, TBinaryProtocol.class);
+        String host = libCore.Config.getParam("scribelog_service", "host");
+        int port = Integer.parseInt(libCore.Config.getParam("scribelog_service","port"));
+        TClientInfo aInfo = ClientFactory.getClient(host, port, ScribeService.Client.class, TBinaryProtocol.class);
+      
         return aInfo;
     }
 
