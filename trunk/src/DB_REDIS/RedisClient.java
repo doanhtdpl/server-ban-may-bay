@@ -1125,6 +1125,29 @@ public class RedisClient {
            
            return ret;
        }
+        
+        //value -> int 64bits ->data  ( if key notexit -> set key 0 )
+        //data = data+1
+        //data -> String -> DB
+        public long incr(String key)
+        {
+            long ret = 0;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.incr(key);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
        
 //       public Map<String,Object> pipeline(Map<>)
 //     {

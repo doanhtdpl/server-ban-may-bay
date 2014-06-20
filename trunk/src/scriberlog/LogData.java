@@ -8,7 +8,7 @@ package scriberlog;
  *
  * @author LinhTA
  */
-//import common.ZingContext;
+//import common.DataCoreContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +126,7 @@ public class LogData {
             timeBegin = System.currentTimeMillis();
             requestTime = String.valueOf(timeBegin / 1000); // chuyen tu milisecond ve second
 
-            ZingContext context = ZingContext.getCurrentInstance();
+            DataCoreContext context = DataCoreContext.getCurrentInstance();
             serverIp = context.serverIp;
             requestDomain = context.requestDomain;
             requestUri = context.requestUri;
@@ -164,7 +164,7 @@ public class LogData {
             timeBegin = System.currentTimeMillis();
             time = String.valueOf(timeBegin / 1000);
 
-            ZingContext context = ZingContext.getCurrentInstance();
+            DataCoreContext context = DataCoreContext.getCurrentInstance();
             serverIp = context.serverIp;
             domain = context.requestDomain;
             clientIp = context.clientIp;
@@ -229,14 +229,21 @@ public class LogData {
     {
         public LogAction_visitByBanner(HttpServletRequest req) 
         {
-           
-             serverIp = req.getLocalAddr();
-            domain= req.getServerName();
-            requestUri= req.getRequestURI();
+                
+             serverIp = "ip";
+            domain= "domain";
+            requestUri= "reqURL";
             
-           clientIp= Util.getClientIP(req);
+           clientIp="clientIp" ;
             
-            appData = req.getParameterValues("_banner")[0];
+            appData = "appdata";
+//             serverIp = req.getLocalAddr();
+//            domain= req.getServerName();
+//            requestUri= req.getRequestURI();
+//            
+//           clientIp= Util.getClientIP(req);
+//            
+//            appData = req.getParameterValues("_banner")[0];
         }
         
           public void finish() {
