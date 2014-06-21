@@ -1129,6 +1129,7 @@ public class RedisClient {
         //value -> int 64bits ->data  ( if key notexit -> set key 0 )
         //data = data+1
         //data -> String -> DB
+        //return new data
         public long incr(String key)
         {
             long ret = 0;
@@ -1148,7 +1149,155 @@ public class RedisClient {
            
            return ret;
         }
-       
+        
+        public long incrBy(String key,long val)
+        {
+            long ret = 0;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.incrBy(key,val);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+        
+        public long hincrBy(String key,String field,long val)
+        {
+            long ret = 0;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.hincrBy(key,field,val);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+        
+        public long decr(String key)
+        {
+            long ret = 0;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.decr(key);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+        
+        public long decrBy(String key,long val)
+        {
+            long ret = 0;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.decrBy(key,val);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+          
+        //get value String ->  val
+        //val =val + data
+        //val -> db redis
+        //return val.length()
+        public long append(String key,String val)
+        {
+            long ret = 0;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.append(key,val);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = -1;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+        
+        
+        //return values sort by index key, not return key-val
+        //if key notExit -> nil at value index 
+        public List<String> mget(String[] key)
+        {
+            List<String> ret = new ArrayList<String>();
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.mget(key);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+        
+        public String mget(String key,int seconds,String value)
+        {
+            String ret = null;
+           
+            Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                ret = jedis.setex(key, seconds, value);
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.keys", ex);
+                ret = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+           
+           return ret;
+        }
+        
+        
 //       public Map<String,Object> pipeline(Map<>)
 //     {
 //         Map<String,Object> ret = new HashMap<String,Object>();
