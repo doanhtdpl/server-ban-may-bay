@@ -23,14 +23,14 @@ import share.ShareMacros;
 public class ModelDevice {
     
     public String _id ;
-    public String _meID;
-    public String _fbID;
+//    public String _meID;
+//    public String _fbID;
     
     public ModelDevice(String id,String meId, String fbId)
     {
         _id = id;
-        _meID = meId;
-        _fbID = fbId;
+//        _meID = meId;
+//        _fbID = fbId;
     }
     
     public List<String> getTokens(List<String> ids,String appId)
@@ -55,6 +55,24 @@ public class ModelDevice {
             
             
         }
+        
+        return data;
+    }
+    
+     public List<String> getToken(String id)
+    {
+        List<String> data = new ArrayList<>();
+                
+        List<String> devices = new ArrayList<String>();
+            devices = getListDevice(id);
+            
+            for (String deviceId : devices) {
+                
+                String token = "";
+                token = Redis_Rd.getInstance().Hget(deviceId,ShareMacros.TOKEN);
+                data.add(token);
+                
+            }
         
         return data;
     }

@@ -63,6 +63,9 @@ public class LogData {
     
      public static  String VISIT_BANNER = "BLOGCOMM_BANNEREVENT";
       public static String LOG_BANNER_ACTION_TEMPLATE = "%s\t%s\t%s\t%s\t%s";
+      
+      public static  String ACTION_GAME = "ACTION_GAME";
+      public static String LOG_ACTIONS_TEMPLATE = "%s\t%s\t%s\t%s\t%s";
     
     private static LogData _instance = new LogData();
 //    public static Map<String, String> mapCatetoActionID = new HashMap<String, String>();
@@ -261,6 +264,34 @@ public class LogData {
         public String clientIp = "";
         public String appData = "";
          public String actionId = "";
+    }
+    
+    public static class LogActions_Test
+    {
+        public LogActions_Test(HttpServletRequest req) 
+        {
+              platform = "zm";
+              actionId = "5";
+              type = "sell";
+              appName = "dbptk";
+              uid = "linh";
+            
+        }
+        
+          public void finish() {
+            
+        }
+
+        public String getData() {
+            String data = String.format(LOG_ACTIONS_TEMPLATE,platform, type, appName, actionId,uid);
+            return data;
+        }
+        
+        public String platform = "";
+        public String type = "";
+        public String appName = "";
+        public String actionId = "";
+        public String uid = "";
     }
     
 }
