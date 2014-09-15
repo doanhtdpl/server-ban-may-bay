@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import share.KeysDefinition;
+import share.ShareMacros;
 
 /**
  *
@@ -39,20 +41,30 @@ public class CoreController {
         }
     }
     
-     public static void pushNotificationPK(String id,String meId, String fbId,String name,String frdID) throws IOException
+     public static void pushNotificationPK(String meId, String fbId,String name,String frdID) throws IOException
     {
         List<String> tokens = new ArrayList<String>();
         
-        ModelDevice _deviceMdl = new ModelDevice(id, meId, fbId);
+        String idFriend = "";
+          if(meId!=null && meId != "")
+        {
+            idFriend =KeysDefinition.getKeyUserME( frdID);
+        }
+        else if(fbId !=null && fbId != "")
+        {
+            idFriend =KeysDefinition.getKeyUserFB(frdID);
+        }
         
-        tokens = _deviceMdl.getToken(id);
+        ModelDevice _deviceMdl = new ModelDevice(idFriend, meId, fbId);
+        
+        tokens = _deviceMdl.getToken(idFriend);
        if(tokens.size() >0)
         {
            logger_.info(GCMSender.getInstance().pushNotificationPK(tokens,meId,fbId,name));
         }
     }
     
-      public static void pushNotificationPK_response(String id,String frdID,String idWinner,String name) throws IOException
+      public static void pushNotificationPK_response(String id,String frdID,String meid,String fbid,String name) throws IOException
     {
         List<String> tokens = new ArrayList<String>();
         
@@ -64,7 +76,7 @@ public class CoreController {
         
        if(tokens.size() >0)
         {
-           logger_.info(GCMSender.getInstance().pushNotificationPK_response(idWinner,tokens,"","",name));
+           logger_.info(GCMSender.getInstance().pushNotificationPK_response(meid,fbid,tokens,name));
         }
     }
     
