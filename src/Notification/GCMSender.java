@@ -77,14 +77,13 @@ public class GCMSender  {
          return multicatstResult;
     }
     
-     public MulticastResult  pushNotificationPK_response( String idWinner,List<String> regIds, String meId,String fbId,String name ) throws IOException
+     public MulticastResult  pushNotificationPK_response( String meid,String fbid,List<String> regIds,String name ) throws IOException
     {
          Message msg = new Message.Builder()
-                .addData(ShareMacros.FACEID, fbId)
-                 .addData(ShareMacros.MEID, meId)
+                .addData(ShareMacros.FACEID, fbid)
+                 .addData(ShareMacros.MEID, meid)
                 .addData(ShareMacros.NAME, name)
-                 .addData(ShareMacros.TYPE, ShareMacros.PK)  
-                 .addData("winner", idWinner)
+                 .addData(ShareMacros.TYPE, ShareMacros.PK) 
                 .build();         
          
          int retries = 0;

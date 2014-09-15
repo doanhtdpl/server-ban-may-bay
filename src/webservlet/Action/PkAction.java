@@ -130,7 +130,7 @@ public class PkAction {
         //push notifycation
         ModelUser modelUser = new ModelUser(uid);
         try{        
-            Controller.CoreController.pushNotificationPK(uid, req._meID, req._fbID, modelUser.getINFO().get(ShareMacros.NAME), frdID);
+            Controller.CoreController.pushNotificationPK( req._meID, req._fbID, modelUser.getINFO().get(ShareMacros.NAME), frdID);
         }
         catch (Exception e)
         {
@@ -144,17 +144,23 @@ public class PkAction {
     {
         String idWinner = "";
          String idLosser = "";
-                 
+        
+         String idme_winner  = "";
+         String idfb_winner = "";
+         String id_frd = req._data.get(ShareMacros.FRIENDID);
+         
+         
         String frdID = "";
         String id = "";
         if(req._meID !=null && req._meID != "")
         {
-            frdID =KeysDefinition.getKeyUserME( req._data.get(ShareMacros.FRIENDID)); 
+            frdID =KeysDefinition.getKeyUserME( id_frd); 
             id = req._meID;
+            
         }
         else if(req._fbID !=null && req._fbID != "")
         {
-            frdID =KeysDefinition.getKeyUserFB(req._data.get(ShareMacros.FRIENDID));
+            frdID =KeysDefinition.getKeyUserFB(id_frd);
             id = req._fbID;
         }
         
@@ -209,9 +215,22 @@ public class PkAction {
                 return;        
             }
         
+        JSONObject dataOut = new JSONObject();
+        dataOut.put("winner", idWinner);
+        
+        out(dataOut.toJSONString(), resp);
+        
+        if(req._meID !=null && req._meID != "")
+        {
+            idme_winner = idWinner.equals(id) ? id : id_frd;
+        }
+        else if(req._fbID !=null && req._fbID != "")
+        {
+            idfb_winner = idWinner.equals(id) ? id : id_frd;
+        }
         ModelUser modelUser = new ModelUser(idWinner);
         try{        
-            Controller.CoreController.pushNotificationPK_response(id,frdID,idWinner, modelUser.getINFO().get(ShareMacros.NAME));
+            Controller.CoreController.pushNotificationPK_response(id,frdID,idme_winner,idfb_winner, modelUser.getINFO().get(ShareMacros.NAME));
         }
         catch (Exception e)
         {
