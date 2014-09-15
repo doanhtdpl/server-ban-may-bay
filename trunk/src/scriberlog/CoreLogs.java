@@ -67,6 +67,17 @@ public class CoreLogs {
         }
      }
 
+     public void writeLog_actionGame (String logData)
+     {
+         String category = LogData.ACTION_GAME;
+         
+         if(logActive != null){
+            if(logActive.writeLog(category, logData))
+                System.out.println("ghi log thanh cong");
+            else
+                System.out.println("ghi log khong thanh cong");
+        }
+     }
     
     public static void testWriteLog(){
         DataCoreContext context = DataCoreContext.getCurrentInstance();
@@ -94,8 +105,9 @@ public class CoreLogs {
     }
     
     public static void main(String[] args) {
-         LogData.LogAction_visitByBanner logAct_banner = new LogData.LogAction_visitByBanner(null);
-                logAct_banner.actionId = LogData.ActionIdDescription.ACTION_VISITBLOG_BANNER;
-                   CoreLogs.instance().writeLog_visitByBanner(logAct_banner.getData());
+        LogData.LogActions_Test logAct_banner = new LogData.LogActions_Test(null);
+                //logAct_banner.actionId = LogData.ActionIdDescription.ACTION_VISITBLOG_BANNER;
+        for(int i =0; i< 100;i++)
+                CoreLogs.instance().writeLog_actionGame(logAct_banner.getData());
     }
 }

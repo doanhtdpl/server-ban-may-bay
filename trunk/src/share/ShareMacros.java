@@ -60,7 +60,8 @@ public class ShareMacros {
     public static final String FRIENDLIST = "list";  
     public static final String FRIENDID = "friendId";
     public static final String ID = "id";
-    public static final String Coin = "coin";
+    public static final String Coin = "coin";    
+    public static final String Gold = "gold";
     
     public static final String LAZE = "laze";
     public static final String TIMELAZE = "timeLaze";
@@ -123,4 +124,8 @@ public class ShareMacros {
     
     public static final String[] INBOX_COLUMNS     = { SENDER_ID_COL, RECEIVER_ID_COL, APP_ID_COL, TIME_COL, STATUS_COL, ITEM_ID_COL, COUNT_COL, METADATA_COL };
     
+    public static final String MONEY = "number";
+    
+    public static final String VUOTMAT = "vuotmat";
+    public static final String PK = "pk";
 }

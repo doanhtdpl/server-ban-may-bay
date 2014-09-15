@@ -102,7 +102,7 @@ public class Util {
        
        if(data.containsKey(ShareMacros.FACEID) && data.containsKey(ShareMacros.MEID))
        {
-           meId = KeysDefinition.getKeyUserFB(data.get(ShareMacros.MEID)); 
+           meId = KeysDefinition.getKeyUserME(data.get(ShareMacros.MEID)); 
            faceId = KeysDefinition.getKeyUserFB(data.get(ShareMacros.FACEID)); 
            
            if(meId.isEmpty() || meId == "" || meId == null)

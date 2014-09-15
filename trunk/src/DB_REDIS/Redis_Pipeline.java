@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import libCore.Config;
+import share.KeysDefinition;
 
 /**
  *
@@ -54,5 +56,45 @@ public class Redis_Pipeline {
         ret = _jedis.checkExits(keys);
         
         return ret;
+    }
+    
+    public Map<String,Map<String,String>> multi_hget(List<String> keys)
+    {
+        Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
+        
+        data = _jedis.multi_Hget(keys);
+        
+        return data;
+        
+    }
+    
+    public Map<String,Map<String,String>> multi_hget_PK(String uid ,Set<String> keys)
+    {
+        Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
+        
+        Map<String,String> keysPk = new HashMap<String, String>();        
+        for (String k : keys) {
+            keysPk.put(k, KeysDefinition.getKeyPK(uid, k));
+        }
+        
+        data = _jedis.multi_Hget(keysPk);
+        
+        return data;
+        
+    }
+    
+    public Map<String,Map<String,String>> multi_hget_PK2Me(String uid ,Set<String> keys)
+    {
+        Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
+        
+        Map<String,String> keysPk = new HashMap<String, String>();        
+        for (String k : keys) {
+            keysPk.put(k, KeysDefinition.getKeyPK(k, uid));
+        }
+        
+        data = _jedis.multi_Hget(keysPk);
+        
+        return data;
+        
     }
 }

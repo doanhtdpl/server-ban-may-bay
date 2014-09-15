@@ -542,6 +542,25 @@ public class RedisClient {
       return ret;
     }
     
+    public long srem(String key,String member)
+    {
+        long ret =0;      
+        Jedis jedis = null;
+        try {
+            jedis = Pool.getResource();
+            ret = jedis.srem(key,member);
+        } catch (Exception ex) {
+            logger.error("Exception in RedisClient.smove", ex);
+            ret = -1;
+        } finally {
+            if (jedis != null) {
+                Pool.returnResource(jedis);
+            }
+        }
+      return ret;
+    }
+    
+    
     public Set<byte[]> smember(byte[] key)
     {
         Set<byte[]> ret =null;      
@@ -915,6 +934,82 @@ public class RedisClient {
         }
         return ret;
     }
+       
+       public Map<String, Map<String,String>> multi_Hget(Map<String,String> keys)
+       {
+           Map<String, Map<String,String>> list = new HashMap<String, Map<String,String>>();
+           Map<String,Response<Map<String, String>>> keysResp= new HashMap<String,Response<Map<String, String>>> ();
+           
+           Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                
+                Pipeline p = jedis.pipelined();
+                
+                for (Map.Entry<String, String> entry : keys.entrySet()) {
+                    String k = entry.getKey();
+                    keysResp.put(k,p.hgetAll(entry.getValue()) );
+                    
+                }
+                                               
+                p.sync(); 
+                
+                for (Map.Entry<String, Response<Map<String, String>>> entry : keysResp.entrySet()) {
+                    String string = entry.getKey();
+                    Response<Map<String, String>> response = entry.getValue();
+                    
+                    list.put(string, response.get());
+                }
+                
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.pipelineCheckExits", ex);
+                list = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+                      
+           return list;
+       }
+       
+       public Map<String, Map<String,String>> multi_Hget(List<String> keys)
+       {
+           Map<String, Map<String,String>> list = new HashMap<String, Map<String,String>>();
+           Map<String,Response<Map<String, String>>> keysResp= new HashMap<String,Response<Map<String, String>>> ();
+           
+           Jedis jedis = null;
+            try {
+                jedis = Pool.getResource();
+                
+                Pipeline p = jedis.pipelined();
+                
+                for (int i = 0; i < keys.size(); i++) {
+                    
+                    keysResp.put(keys.get(i),p.hgetAll(keys.get(i)) );
+                    
+                }
+                               
+                p.sync(); 
+                
+                for (Map.Entry<String, Response<Map<String, String>>> entry : keysResp.entrySet()) {
+                    String string = entry.getKey();
+                    Response<Map<String, String>> response = entry.getValue();
+                    
+                    list.put(string, response.get());
+                }
+                
+            } catch (Exception ex) {
+                logger.error("Exception in RedisClient.pipelineCheckExits", ex);
+                list = null;
+            } finally {
+                if (jedis != null) {
+                    Pool.returnResource(jedis);
+                }
+            }
+                      
+           return list;
+       }
        
        public Map<String,Boolean> checkExits(List<String> keys)
        {
@@ -1296,6 +1391,7 @@ public class RedisClient {
            
            return ret;
         }
+        
         
         
 //       public Map<String,Object> pipeline(Map<>)

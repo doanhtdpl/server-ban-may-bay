@@ -58,6 +58,25 @@ public class Redis_W {
         
     }
     
+    public long s_remove(String key, String member)
+    {
+        long ret = 0;
+        
+        ret = _jedis.srem(key, member);
+        
+        return ret;
+        
+    }
+    
+    public long del(String key)
+    {
+        long ret = 0;
+        
+        ret = _jedis.del(key);
+        
+        return ret;
+    }
+    
     public String hset(byte[] key, Map<byte[],byte[]> val )
     {
         String ret = "0";
@@ -123,7 +142,7 @@ public class Redis_W {
         return ret;
     }
      
-      public long lpudh(String list,String key )
+      public long lpush(String list,String key )
     {
         long ret = 0 ;
         
@@ -132,7 +151,7 @@ public class Redis_W {
         return ret;
     }
       
-       public long lpudh(byte[] key,byte[] list)
+       public long lpush(byte[] key,byte[] list)
     {
         long ret = 0 ;
         
@@ -186,6 +205,46 @@ public class Redis_W {
          {
              ret = hset(key,data);
              if( ret == "-1" )
+             {
+                 retries --;
+             }
+             else break;
+         }
+           
+           return ret;
+       }
+          
+          public long incrBy(String key,long val)
+       {
+           long ret = 0;
+           
+            int retries = Integer.parseInt(Config.getParam("redis", "retries"));
+            
+         while(retries>0)
+         {
+             
+             ret = _jedis.incrBy(key,val);
+             if( ret == -1 )
+             {
+                 retries --;
+             }
+             else break;
+         }
+           
+           return ret;
+       }
+          
+          public long incr(String key)
+       {
+           long ret = 0;
+           
+            int retries = Integer.parseInt(Config.getParam("redis", "retries"));
+            
+         while(retries>0)
+         {
+             
+             ret = _jedis.incr(key);
+             if( ret == -1 )
              {
                  retries --;
              }

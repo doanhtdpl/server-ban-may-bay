@@ -357,11 +357,11 @@ public class ModelItem {
          {
           
            
-            int count = 0;
-            count = countIt + 1;
+            //int count = 0;
+            //count = countIt + 1;
            
             String key = KeysDefinition.getKeyItem(uid, item);
-            long ret2 = Redis_W.getInstance().setRetries(key, String.valueOf(count));
+            long ret2 = Redis_W.getInstance().incr(key);
             if(ret2 == -1)
             {
                 
@@ -374,6 +374,95 @@ public class ModelItem {
           
         
         }
+        
+        public static boolean addItem(String uid,String item,long val)
+        {
+            
+            boolean ret = false;
+            
+            Map<String,String> data = new HashMap<String,String>();
+            
+            int max = 0;
+           try
+           {
+               max = Integer.valueOf( libCore.Config.getParam(ShareMacros.MAX, item));
+           }
+           catch(Exception e)
+           {}
+           
+         String countStr = ModelItem.getCountItem(uid, item);
+         int countIt = 0;
+         if(countStr != null)
+             countIt = Integer.parseInt(countStr);
+         else
+         {
+             return false;
+         }
+         if(max != 0 && countIt +val > max )
+         {
+             return false;
+         }
+         else
+         {
+          
+           
+            //int count = 0;
+            //count = countIt + 1;
+           
+            String key = KeysDefinition.getKeyItem(uid, item);
+            long ret2 = Redis_W.getInstance().incrBy(key,val);
+            if(ret2 == -1)
+            {
+                
+                return false;
+            }
+
+                return true;
+            
+         }
+          
+        
+        }
+        
+        public static boolean subItem(String uid,String item,long val)
+        {
+            
+            boolean ret = false;
+            
+            Map<String,String> data = new HashMap<String,String>();
+            
+            int min = 0;
+           
+         String countStr = ModelItem.getCountItem(uid, item);
+         int countIt = 0;
+         if(countStr != null)
+             countIt = Integer.parseInt(countStr);
+         else
+         {
+             return false;
+         }
+         if( countIt -val < min )
+         {
+             return false;
+         }
+         else
+         {
+          
+           
+            String key = KeysDefinition.getKeyItem(uid, item);
+            long ret2 = Redis_W.getInstance().incrBy(key,-val);
+            if(ret2 == -1)
+            {
+                
+                return false;
+            }
+
+                return true;
+            
+         }
+                  
+        }
+        
         
         public static Map<String,String> getTimeSendLife (String uid,String appID)
         {

@@ -12,12 +12,15 @@ import Notification.GCMSender;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author LinhTA
  */
 public class CoreController {
+    
+    private static Logger logger_ = Logger.getLogger(CoreController.class);
     
     public static void pushNotificationScore(String id,String meId, String fbId,String name,long newScore, long oldScore,String appId) throws IOException
     {
@@ -32,9 +35,37 @@ public class CoreController {
         {
             tokens = _deviceMdl.getTokens(friends4Push,appId);
 
-            System.out.print(GCMSender.getInstance().pushNotificationScore(tokens,meId,fbId,name, newScore));
+            logger_.info(GCMSender.getInstance().pushNotificationScore(tokens,meId,fbId,name, newScore));
         }
     }
     
+     public static void pushNotificationPK(String id,String meId, String fbId,String name,String frdID) throws IOException
+    {
+        List<String> tokens = new ArrayList<String>();
+        
+        ModelDevice _deviceMdl = new ModelDevice(id, meId, fbId);
+        
+        tokens = _deviceMdl.getToken(id);
+       if(tokens.size() >0)
+        {
+           logger_.info(GCMSender.getInstance().pushNotificationPK(tokens,meId,fbId,name));
+        }
+    }
+    
+      public static void pushNotificationPK_response(String id,String frdID,String idWinner,String name) throws IOException
+    {
+        List<String> tokens = new ArrayList<String>();
+        
+        ModelDevice _deviceMdl = new ModelDevice(id, "", "");        
+        tokens = _deviceMdl.getToken(id);
+        
+        _deviceMdl = new ModelDevice(frdID, "", "");
+        tokens.addAll(_deviceMdl.getToken(frdID));
+        
+       if(tokens.size() >0)
+        {
+           logger_.info(GCMSender.getInstance().pushNotificationPK_response(idWinner,tokens,"","",name));
+        }
+    }
     
 }

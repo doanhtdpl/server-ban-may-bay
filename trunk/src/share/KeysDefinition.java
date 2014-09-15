@@ -262,4 +262,46 @@ public class KeysDefinition {
          
          return ret;
      }
+     
+      public static String getKeyPK(String uid,String frdid)
+     {
+         String ret ="";
+         
+         ret = uid+"_pk_"+frdid;
+         
+         return ret;
+     }
+      
+      public static String getKeyPK_listMe(String uid)
+     {
+         String ret ="";
+         
+         ret = uid+"_pks";
+         
+         return ret;
+     }
+      
+      public static String getKeyPK_listToMe(String uid)
+     {
+         String ret ="";
+         
+         ret = "pks_"+uid;
+         
+         return ret;
+     }
+      
+      public static String getKeyPK_listToFrd(String frdID,String meID,String fbId)
+     {
+         String id = "";
+         if(meID !="" && meID != null)
+             id = getKeyUserME(frdID);
+         else if(fbId!="" && fbId!= null)
+             id = getKeyUserFB(frdID);
+         
+         String ret ="";
+         
+         ret = "pks_"+id;
+         
+         return ret;
+     }
 }

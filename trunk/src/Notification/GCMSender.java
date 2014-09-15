@@ -8,8 +8,10 @@ package Notification;
 
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
+import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import java.io.IOException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,44 @@ public class GCMSender  {
                  .addData(ShareMacros.MEID, meId)
                 .addData(ShareMacros.NAME, name)
                 .addData(ShareMacros.SCORE, String.valueOf(newScore))
+                 .addData(ShareMacros.TYPE, ShareMacros.VUOTMAT)  
                 .build();
+         
+         
+         int retries = 0;
+         retries = Integer.parseInt(Config.getParam("gcm", "retries"));
+               
+         multicatstResult = sender.send(msg, regIds, retries);
+         
+         return multicatstResult;
+    }
+    
+    public MulticastResult  pushNotificationPK( List<String> regIds, String meId,String fbId,String name ) throws IOException
+    {
+         Message msg = new Message.Builder()
+                .addData(ShareMacros.FACEID, fbId)
+                 .addData(ShareMacros.MEID, meId)
+                .addData(ShareMacros.NAME, name)
+                 .addData(ShareMacros.TYPE, ShareMacros.PK)  
+                .build();         
+         
+         int retries = 0;
+         retries = Integer.parseInt(Config.getParam("gcm", "retries"));
+               
+         multicatstResult = sender.send(msg, regIds, retries);
+         
+         return multicatstResult;
+    }
+    
+     public MulticastResult  pushNotificationPK_response( String idWinner,List<String> regIds, String meId,String fbId,String name ) throws IOException
+    {
+         Message msg = new Message.Builder()
+                .addData(ShareMacros.FACEID, fbId)
+                 .addData(ShareMacros.MEID, meId)
+                .addData(ShareMacros.NAME, name)
+                 .addData(ShareMacros.TYPE, ShareMacros.PK)  
+                 .addData("winner", idWinner)
+                .build();         
          
          int retries = 0;
          retries = Integer.parseInt(Config.getParam("gcm", "retries"));
@@ -76,7 +115,10 @@ public class GCMSender  {
 //    
     public static void main(String[] args) throws IOException{
         
-      // System.out.print(GCMSender.getInstance().newFriendHightScore(new ArrayList<String>(),"a","c"));
-        
+      //System.out.print(GCMSender.getInstance().pushNotificationScore(new ArrayList<String>(),);
+        List<String> tokens = new ArrayList<String>();
+       tokens.add("APA91bHLXng9mAp34suMA0ufNWmv_pKNfaZhLAQIqzv5IqtxonY1Utdz_wBfjNQHmKOuHA92eOUetduwx4CsrS1yR8dHBbvtstGZ4wXoB7pA9Sy-6lnFM0fa69Zy0_WI8qKOxbxWz8TzXtO1nhTOY06c9CJKjab4fw");
+       //  tokens.add("Y");
+        System.out.print(GCMSender.getInstance().pushNotificationScore(tokens, "", "100001384845416", "Linh dep trai", 1000000));
     }
 }

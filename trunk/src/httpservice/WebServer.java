@@ -77,6 +77,8 @@ public class WebServer {
         handler.addServletWithMapping("webservlet.ProfileController", "/profile/*");
         handler.addServletWithMapping("webservlet.ItemController", "/item");
         handler.addServletWithMapping("webservlet.ItemController", "/item/*");
+        handler.addServletWithMapping("webservlet.PkController", "/pk/*");
+        handler.addServletWithMapping("webservlet.PkController", "/pk/*");
         
      //    handler.addServletWithMapping("webservlet.PaymentController", "/naptien/*");
        //  handler.addServletWithMapping("webservlet.PaymentController", "/naptien/*");
