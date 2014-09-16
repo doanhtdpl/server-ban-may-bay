@@ -141,7 +141,7 @@ public class ModelPK {
     {
         boolean ret = true;
         
-        String key = KeysDefinition.getKeyPK_listToFrd(_id,meID,fbID);
+        String key = KeysDefinition.getKeyPK_listToFrd(frdID,meID,fbID);
         long kq = Redis_W.getInstance().lpush(key, _id);
         if(kq ==-1)
             return false;
