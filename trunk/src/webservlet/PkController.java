@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.omg.CORBA.DATA_CONVERSION;
 import share.ShareMacros;
 import webservlet.Action.ItemAction;
+import webservlet.Action.PkAction;
 
 /**
  *
@@ -75,7 +76,7 @@ public class PkController extends ServerServlet{
       
         if(auth.checkAuth())
         {
-            ItemAction action = new ItemAction(); 
+            PkAction action = new PkAction(); 
             action.handle(request, resp);
         }
         else
