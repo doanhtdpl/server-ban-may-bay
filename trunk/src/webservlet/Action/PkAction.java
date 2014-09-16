@@ -80,7 +80,7 @@ public class PkAction {
         String score = req._data.get(ShareMacros.SCORE);
         String frdID = req._data.get(ShareMacros.FRIENDID);
         
-        if(!checkMoney(uid, typeMoney, Long.getLong(number)))
+        if(!checkMoney(uid, typeMoney, Long.valueOf(number)))
         {
             outFalse(resp);
             return ;
@@ -106,7 +106,7 @@ public class PkAction {
         
         //add list u2
         boolean addListFrd = modelPk.add2List_PK2Frd(frdID,req._meID,req._fbID);
-        if(!addList)
+        if(!addListFrd)
         {
             outFalse(resp);
             return;
@@ -301,7 +301,7 @@ public class PkAction {
      
     public boolean checkMoney(String uid,String type, long number)
   {
-      long money = Long.getLong(  ModelItem.getCountItem(uid, type));
+      long money = Long.valueOf(ModelItem.getCountItem(uid, type));
       if(money<number)
           return false;
       else

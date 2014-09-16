@@ -100,7 +100,7 @@ public class Util {
        String faceId = "";       
        String uID = "";
        
-       if(data.containsKey(ShareMacros.FACEID) && data.containsKey(ShareMacros.MEID))
+       if(data.containsKey(ShareMacros.FACEID) && data.containsKey(ShareMacros.MEID) && data.get(ShareMacros.FACEID)!=null &&data.get(ShareMacros.FACEID)==""&& data.get(ShareMacros.MEID)!= null && data.get(ShareMacros.MEID)!= "")
        {
            meId = KeysDefinition.getKeyUserME(data.get(ShareMacros.MEID)); 
            faceId = KeysDefinition.getKeyUserFB(data.get(ShareMacros.FACEID)); 
