@@ -17,6 +17,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import libCore.Config;
 import share.KeysDefinition;
 import share.ShareMacros;
 import utilities.time.UtilTime;
@@ -42,7 +43,7 @@ public class ModelPK {
         
         //luu data pk
         String key = KeysDefinition.getKeyPK(_id, frdId);
-        if(Redis_Rd.getInstance().isExits(key))
+        if(Config.getParam("test", "pk") == "false" && Redis_Rd.getInstance().isExits(key))
             return false;        
         
         Map<String,String> data = new HashMap<String,String>();
