@@ -83,7 +83,7 @@ public class GCMSender  {
                 .addData(ShareMacros.FACEID, fbid)
                  .addData(ShareMacros.MEID, meid)
                 .addData(ShareMacros.NAME, name)
-                 .addData(ShareMacros.TYPE, ShareMacros.PK) 
+                 .addData(ShareMacros.TYPE, ShareMacros.PK_RESP) 
                 .build();         
          
          int retries = 0;

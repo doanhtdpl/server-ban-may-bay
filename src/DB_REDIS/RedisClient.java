@@ -23,6 +23,7 @@ import redis.clients.jedis.Tuple;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 import share.KeysDefinition;
+import share.ShareMacros;
 
 /**
  *
@@ -597,6 +598,25 @@ public class RedisClient {
       return ret;
     }
     
+    public long list_del(String key,String member)
+    {
+        long ret =0;      
+        Jedis jedis = null;
+        try {
+            jedis = Pool.getResource();
+            ret = jedis.lrem(key,1,member);
+        } catch (Exception ex) {
+            logger.error("Exception in RedisClient.smove", ex);
+            ret = -1;
+        } finally {
+            if (jedis != null) {
+                Pool.returnResource(jedis);
+            }
+        }
+      return ret;
+    }
+    
+    
     public Map<byte[],byte[]> getHm(byte[] key)
     {
         Map<byte[],byte[]> ret =null;      
@@ -957,8 +977,9 @@ public class RedisClient {
                 for (Map.Entry<String, Response<Map<String, String>>> entry : keysResp.entrySet()) {
                     String string = entry.getKey();
                     Response<Map<String, String>> response = entry.getValue();
+                    Map<String, String> dbdatabase = response.get();
                     
-                    list.put(string, response.get());
+                    list.put(string,dbdatabase );
                 }
                 
             } catch (Exception ex) {

@@ -151,6 +151,15 @@ public class Redis_W {
         return ret;
     }
       
+       public long ldel(String list,String key )
+    {
+        long ret = 0 ;
+        
+        ret = _jedis.list_del(list,key );
+        
+        return ret;
+    }
+      
        public long lpush(byte[] key,byte[] list)
     {
         long ret = 0 ;

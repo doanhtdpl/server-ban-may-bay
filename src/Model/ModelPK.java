@@ -48,7 +48,7 @@ public class ModelPK {
         
         Map<String,String> data = new HashMap<String,String>();
         data.put(ShareMacros.SCORE, score);
-        data.put("money", money);
+        data.put(ShareMacros.MONEY, money);
         data.put(ShareMacros.TYPE, typeMoney);
         data.put(ShareMacros.TIME, String.valueOf(time));
         
@@ -61,7 +61,7 @@ public class ModelPK {
     public boolean del2List_PK(String frdID)
     {
         String key = KeysDefinition.getKeyPK_listMe(_id);
-        return (Redis_W.getInstance().s_remove(key,frdID)!= -1);
+        return (Redis_W.getInstance().ldel(key,frdID)!= -1);
     }
     
     public boolean del2List_PK2Frd(String frdID,String meID, String fbID)
@@ -78,7 +78,7 @@ public class ModelPK {
     
     public OBJ_PK getPK2Me(String frdID)
     {
-        String key = KeysDefinition.getKeyPK(frdID, _id);
+        String key = KeysDefinition.getKeyPK(_id,frdID );
         Map<String,String> data = new HashMap<String,String>();
         
         data = Redis_Rd.getInstance().hget(key);        
@@ -100,24 +100,25 @@ public class ModelPK {
         return listPK;
     }
     
-    public Map<String,Map<String,String>> getListPk2Me()
+    public Map<String,Map<String,String>> getListPk2Me(String meId,String fbId)
     {
         Map<String,Map<String,String>> listPK2me = new HashMap<String,Map<String,String>>();
      
         String key = KeysDefinition.getKeyPK_listToMe(_id);
-        Set<String> listFrdID = new HashSet<String>();
-        listFrdID = Redis_Rd.getInstance().smember(key);
+        List<String> listFrdID = new ArrayList<String>();
+        listFrdID = Redis_Rd.getInstance().list_getAll(key);
         
         Map<String, Map<String,String>> datas = new HashMap<String, Map<String,String>>();
-        datas = Redis_Pipeline.getInstance().multi_hget_PK2Me(_id,listFrdID);
-        
+        datas = Redis_Pipeline.getInstance().multi_hget_PK2Me(meId,fbId,listFrdID);
+        ModelUser modelUser; 
         for (Map.Entry<String, Map<String, String>> entry : datas.entrySet()) {
             String fid = entry.getKey();
             Map<String, String> data = entry.getValue();
-            
+            modelUser =  new ModelUser(data.get(ShareMacros.FRIENDID));
             Map<String,String> dataget = new HashMap<String,String>();
             dataget.put(ShareMacros.MONEY, data.get(ShareMacros.MONEY));
             dataget.put(ShareMacros.TYPE, data.get(ShareMacros.TYPE));
+            dataget.put(ShareMacros.NAME, modelUser.getINFO().get(ShareMacros.NAME));
             
             listPK2me.put(fid, dataget);
         }
@@ -143,7 +144,13 @@ public class ModelPK {
         boolean ret = true;
         
         String key = KeysDefinition.getKeyPK_listToFrd(frdID,meID,fbID);
-        long kq = Redis_W.getInstance().lpush(key, _id);
+        String id ="";
+        if(meID != null && meID != "")
+            id = meID;
+        else if(fbID != null && fbID != "")
+            id = fbID;
+        
+        long kq = Redis_W.getInstance().lpush(key, id);
         if(kq ==-1)
             return false;
         return ret;
