@@ -129,4 +129,6 @@ public class ShareMacros {
     public static final String VUOTMAT = "vuotmat";
     public static final String PK = "pk";
     public static final String PK_WIN = "pk_win";
+    
+     public static final String PK_RESP = "pkresponse";
 }

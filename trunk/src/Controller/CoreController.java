@@ -41,6 +41,21 @@ public class CoreController {
         }
     }
     
+    public static void pushNotificationScore_test(String id,String meId, String fbId,String name,long newScore, long oldScore,String appId) throws IOException
+    {
+        List<String> tokens = new ArrayList<String>();
+        List<String> friends4Push = new ArrayList<String>();
+        friends4Push.add(id);
+        
+        ModelScore _scoreMd = new ModelScore(id, meId, fbId, newScore);
+        ModelDevice _deviceMdl = new ModelDevice(id, meId, fbId);
+         tokens = _deviceMdl.getTokens(friends4Push,appId);
+        
+
+            logger_.info(GCMSender.getInstance().pushNotificationScore(tokens,meId,fbId,name, newScore));
+        
+    }
+    
      public static void pushNotificationPK(String meId, String fbId,String name,String frdID) throws IOException
     {
         List<String> tokens = new ArrayList<String>();

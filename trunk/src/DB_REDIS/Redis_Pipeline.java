@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import libCore.Config;
 import share.KeysDefinition;
+import share.ShareMacros;
 
 /**
  *
@@ -83,16 +84,32 @@ public class Redis_Pipeline {
         
     }
     
-    public Map<String,Map<String,String>> multi_hget_PK2Me(String uid ,Set<String> keys)
+    public Map<String,Map<String,String>> multi_hget_PK2Me(String meId,String fbId ,List<String> keys)
     {
         Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
+        Map<String,String> listKeyFriends = new HashMap<String, String>();
+        Map<String,String> keysPk = new HashMap<String, String>();
         
-        Map<String,String> keysPk = new HashMap<String, String>();        
+        boolean checkFb = false;
+        if(meId != null && meId != "")
+            checkFb = false;
+        else 
+            checkFb = true;
+        String idMe =  checkFb ? fbId:meId;
+        
         for (String k : keys) {
-            keysPk.put(k, KeysDefinition.getKeyPK(k, uid));
+            String kFriend =checkFb ? KeysDefinition.getKeyUserFB(k) : KeysDefinition.getKeyUserME(k);
+            listKeyFriends.put(k, kFriend);
+            keysPk.put(k, KeysDefinition.getKeyPK(kFriend,idMe));
         }
         
         data = _jedis.multi_Hget(keysPk);
+        
+        for (Map.Entry<String, Map<String,String>> entry : data.entrySet()) {
+            String k = entry.getKey();
+             Map<String,String> v = entry.getValue();
+             v.put(ShareMacros.FRIENDID, listKeyFriends.get(k));
+        }
         
         return data;
         

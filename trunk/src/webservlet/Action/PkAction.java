@@ -67,6 +67,8 @@ public class PkAction {
                 getPks(request, resp);
             else if(request._method.equals("update"))
                 updatePks(request,resp);
+             else if(request._method.equals("testnotification"))
+                testNotification(request, resp);
         } catch (Exception ex) {
            // logger_.error("CampainAction.handle:" + ex.getMessage() + ", Username:" + req.getAttribute("ownerName").toString(), ex);
         }
@@ -139,7 +141,18 @@ public class PkAction {
 
     }
      
-    
+    private void testNotification( ClientRequest req, HttpServletResponse resp )
+    {
+        ModelUser modelUser = new ModelUser(req._uid);
+        try{        
+            Controller.CoreController.pushNotificationScore_test(req._uid,req._meID, req._fbID, modelUser.getINFO().get(ShareMacros.NAME), 1000000,10000,"DBPTK");
+        }
+        catch (Exception e)
+        {
+            
+        }
+    }
+            
     private void reqPk( ClientRequest req, HttpServletResponse resp )
     {
         String idWinner = "";
@@ -177,11 +190,11 @@ public class PkAction {
         if(score > pk._score)
         {
             idWinner= id;
-            idLosser = frdID;
+            idLosser = id_frd;
         }
         else 
         {
-            idWinner = frdID;
+            idWinner = id_frd;
             idLosser = id;
         }
         
@@ -244,7 +257,7 @@ public class PkAction {
          String uid = req._uid;
          ModelPK modelPK = new ModelPK(uid);
          
-         Map<String,Map<String,String>> data = modelPK.getListPk2Me();
+         Map<String,Map<String,String>> data = modelPK.getListPk2Me(req._meID,req._fbID);
          
          JSONObject dataObj = new JSONObject();
          dataObj.putAll(data);
