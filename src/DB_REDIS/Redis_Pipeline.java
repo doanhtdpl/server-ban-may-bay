@@ -69,7 +69,7 @@ public class Redis_Pipeline {
         
     }
     
-    public Map<String,Map<String,String>> multi_hget_PK(String uid ,Set<String> keys)
+    public Map<String,Map<String,String>> multi_hget_PK(String uid ,List<String> keys)
     {
         Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
         
