@@ -92,8 +92,8 @@ public class ModelPK {
         Map<String,Map<String,String>> listPK = new HashMap<String,Map<String,String>>();
                 
         String key = KeysDefinition.getKeyPK_listMe(_id);
-        Set<String> listFrdID = new HashSet<String>();
-        listFrdID = Redis_Rd.getInstance().smember(key);
+        List<String> listFrdID = new ArrayList<String>();
+        listFrdID = Redis_Rd.getInstance().list_getAll(key);
         
         listPK = Redis_Pipeline.getInstance().multi_hget_PK(_id,listFrdID);
         
