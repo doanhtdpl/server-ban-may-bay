@@ -186,6 +186,12 @@ public class PkAction {
             return;
         }
         
+        if(!checkMoney(req._uid, pk._typeMoney, pk._money))
+        {
+            outFalse(resp);
+            return ;
+        }
+        
         long score = Long.parseLong(req._data.get(ShareMacros.SCORE));
         if(score > pk._score)
         {
@@ -215,18 +221,30 @@ public class PkAction {
                 outFalse(resp);            
                 return;        
             }
-        
-        if(!ModelItem.addItem(idWinner,pk._typeMoney,pk._money ))
-            {            
-                outFalse(resp);            
-                return;        
-            }
-       
-        if(!ModelItem.subItem(idLosser,pk._typeMoney,pk._money ))
-            {            
-                outFalse(resp);            
-                return;        
-            }
+        if(idWinner.equals(id) && !idWinner.equals(id_frd) )
+        {
+            if(!ModelItem.addItem(idWinner,pk._typeMoney,pk._money ))
+                {            
+                    outFalse(resp);            
+                    return;        
+                }
+
+            
+        }else
+            if(idWinner.equals(id_frd) && !idWinner.equals(id) )
+        {
+            if(!ModelItem.addItem(idWinner,pk._typeMoney,pk._money *2))
+                {            
+                    outFalse(resp);            
+                    return;        
+                }
+            if(!ModelItem.subItem(idLosser,pk._typeMoney,pk._money))
+                {            
+                    outFalse(resp);            
+                    return;        
+                }
+            
+        }
         
         JSONObject dataOut = new JSONObject();
         dataOut.put("winner", idWinner);
