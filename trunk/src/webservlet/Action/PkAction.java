@@ -223,7 +223,7 @@ public class PkAction {
             }
         if(idWinner.equals(id) && !idWinner.equals(id_frd) )
         {
-            if(!ModelItem.addItem(idWinner,pk._typeMoney,pk._money ))
+            if(!ModelItem.addItem(req._uid,pk._typeMoney,pk._money ))
                 {            
                     outFalse(resp);            
                     return;        
@@ -233,12 +233,12 @@ public class PkAction {
         }else
             if(idWinner.equals(id_frd) && !idWinner.equals(id) )
         {
-            if(!ModelItem.addItem(idWinner,pk._typeMoney,pk._money *2))
+            if(!ModelItem.addItem(frdID,pk._typeMoney,pk._money *2))
                 {            
                     outFalse(resp);            
                     return;        
                 }
-            if(!ModelItem.subItem(idLosser,pk._typeMoney,pk._money))
+            if(!ModelItem.subItem(req._uid,pk._typeMoney,pk._money))
                 {            
                     outFalse(resp);            
                     return;        
