@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package logging.report.scribe.core;
+package scriberlog.core;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool.Config;
