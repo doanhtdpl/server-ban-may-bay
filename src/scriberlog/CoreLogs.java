@@ -107,7 +107,7 @@ public class CoreLogs {
     public static void main(String[] args) {
         LogData.LogActions_Test logAct_banner = new LogData.LogActions_Test(null);
                 //logAct_banner.actionId = LogData.ActionIdDescription.ACTION_VISITBLOG_BANNER;
-        for(int i =0; i< 100;i++)
+        for(int i =0; i< 1;i++)
                 CoreLogs.instance().writeLog_actionGame(logAct_banner.getData());
     }
 }

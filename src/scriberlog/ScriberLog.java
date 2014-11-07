@@ -83,6 +83,7 @@ public class ScriberLog implements LogInterface {
             logEntryList.add(logEntry);
         }
         if (logEntryList.size() > 0) {
+            
             TClientInfo clientInfo = getClientInfo();
             ScribeService.Client aClient = clientInfo.getClientT();
             if (aClient != null) {
