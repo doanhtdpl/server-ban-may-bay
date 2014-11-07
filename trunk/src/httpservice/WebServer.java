@@ -33,6 +33,7 @@ public class WebServer {
         
         //setup JMX
         MBeanContainer mbContainer = new MBeanContainer(java.lang.management.ManagementFactory.getPlatformMBeanServer());
+        
         server.getContainer().addEventListener(mbContainer);
         server.addBean(mbContainer);
         mbContainer.addBean(Log.getLog());
