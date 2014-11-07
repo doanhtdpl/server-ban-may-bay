@@ -24,7 +24,7 @@ import org.apache.thrift.transport.TTransport;
 import scriberlog.core.LogEntry;
 import scriberlog.core.ResultCode;
 import scriberlog.core.ScribeService;
-import logging.report.scribe.core.ScribeClientPool;
+import scriberlog.core.ScribeClientPool;
 import org.apache.log4j.Logger;
 import org.cliffc.high_scale_lib.NonBlockingHashMap;
 
